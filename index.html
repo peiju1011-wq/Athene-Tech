@@ -79,75 +79,83 @@
 
         // --- Shared Components ---
 
-        const Header = () => {
-            const [isMenuOpen, setIsMenuOpen] = useState(false);
-            const location = useLocation();
-            
-            const navLinks = [
-{ name: '首頁', path: '/' },
-    { name: '產品介紹', path: '/products' },
-    { name: '設計案例', path: '/projects' }, // 新增這行
-    { name: '聯絡我們', path: '/contact' }
-            ];
+       const Header = () => {
+    const navigate = useNavigate();
+    const { pathname } = useLocation();
 
-            return (
-                <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
-                    <div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
-                        <Link to="/" class="flex items-center gap-3">
-                            <div class="text-primary">
-                                <div class="text-primary">
-    <img src="works/logo.svg" alt="宇碩光" class="h-8 w-auto block" />
-    </div>
-                            </div>
-                            <div class="flex flex-col leading-none">
-                                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">宇碩光</h1>
-                                <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-medium">Athene Technology</span>
-                            </div>
-                        </Link>
-                        
-                        <div class="hidden md:flex flex-1 justify-end gap-10 items-center">
-                            <nav class="flex gap-8">
-                                {navLinks.map(link => (
-                                    <Link 
-                                        key={link.path}
-                                        to={link.path} 
-                                        class={`text-sm font-medium hover:text-primary transition-colors ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
-                                    >
-                                        {link.name}
-                                    </Link>
-                                ))}
-                              
-                            </nav>
-                            <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
-                                <button class="flex h-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 px-4 text-xs font-bold tracking-widest hover:bg-primary hover:text-white transition-all text-slate-600 dark:text-slate-300">
-                                    EN
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} class="md:hidden text-slate-900 dark:text-white">
-                            <span class="material-symbols-outlined">{isMenuOpen ? 'close' : 'menu'}</span>
-                        </button>
+    // 啟動 Google 翻譯功能
+    const handleTranslate = () => {
+        // 如果腳本還沒載入，則動態載入
+        if (!document.getElementById('google_translate_script')) {
+            const addScript = document.createElement('script');
+            addScript.id = 'google_translate_script';
+            addScript.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+            document.body.appendChild(addScript);
+
+            window.googleTranslateElementInit = () => {
+                new window.google.translate.TranslateElement({
+                    pageLanguage: 'zh-TW', // 預設語言：繁體中文
+                    includedLanguages: 'en,zh-TW', // 只允許在英文與繁中之間切換
+                    layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE,
+                    autoDisplay: false
+                }, 'google_translate_element');
+                
+                // 觸發後自動開啟 Google 翻譯選單
+                setTimeout(() => {
+                    const select = document.querySelector('.goog-te-combo');
+                    if (select) {
+                        select.value = 'en';
+                        select.dispatchEvent(new Event('change'));
+                    }
+                }, 500);
+            };
+        } else {
+            // 如果已載入，手動切換語系
+            const select = document.querySelector('.goog-te-combo');
+            if (select) {
+                select.value = select.value === 'en' ? 'zh-TW' : 'en';
+                select.dispatchEvent(new Event('change'));
+            }
+        }
+    };
+
+    return (
+        <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
+            <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+                {/* Logo */}
+                <div onClick={() => navigate('/')} className="flex items-center gap-3 cursor-pointer group">
+                    <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+                        <span className="material-symbols-outlined text-white text-2xl">change_history</span>
                     </div>
+                    <div className="flex flex-col text-slate-900 dark:text-white">
+                        <span className="text-lg font-black tracking-tighter leading-none">宇碩光</span>
+                        <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Athene Tech</span>
+                    </div>
+                </div>
 
-                    {/* Mobile Menu */}
-                    {isMenuOpen && (
-                        <div class="md:hidden bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4">
-                            {navLinks.map(link => (
-                                <Link 
-                                    key={link.path}
-                                    to={link.path} 
-                                    onClick={() => setIsMenuOpen(false)}
-                                    class={`text-base font-medium ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                </header>
-            );
-        };
+                {/* Desktop Navigation */}
+                <nav className="hidden md:flex items-center gap-10">
+                    <button onClick={() => navigate('/')} className={`text-sm font-bold tracking-widest transition-colors ${pathname === '/' ? 'text-primary' : 'text-slate-500 hover:text-primary'}`}>首頁</button>
+                    <button onClick={() => navigate('/products')} className={`text-sm font-bold tracking-widest transition-colors ${pathname === '/products' ? 'text-primary' : 'text-slate-500 hover:text-primary'}`}>產品介紹</button>
+                    <button onClick={() => navigate('/projects')} className={`text-sm font-bold tracking-widest transition-colors ${pathname === '/projects' ? 'text-primary' : 'text-slate-500 hover:text-primary'}`}>設計案例</button>
+                    <button onClick={() => navigate('/contact')} className={`text-sm font-bold tracking-widest transition-colors ${pathname === '/contact' ? 'text-primary' : 'text-slate-500 hover:text-primary'}`}>聯絡我們</button>
+                </nav>
+
+                <div className="flex items-center gap-4">
+                    {/* Google 翻譯隱藏節點 */}
+                    <div id="google_translate_element" style={{ display: 'none' }}></div>
+                    
+                    <button 
+                        onClick={handleTranslate}
+                        className="h-10 px-4 rounded-lg bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-black tracking-widest hover:bg-primary hover:text-white transition-all border border-slate-100 dark:border-slate-700 uppercase"
+                    >
+                        EN
+                    </button>
+                </div>
+            </div>
+        </header>
+    );
+};
 
         const Footer = () => (
             <footer class="bg-slate-50 dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-20 pb-10">
