@@ -13,7 +13,12 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    
+    <style>
+    /* 強制隱藏 Google 翻譯 UI */
+    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt { display: none !important; }
+    body { top: 0px !important; position: static !important; }
+    #google_translate_element { display: none; }
+</style>
     <!-- React & Router Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -119,9 +124,12 @@
                               
                             </nav>
                             <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
-                                <button class="flex h-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 px-4 text-xs font-bold tracking-widest hover:bg-primary hover:text-white transition-all text-slate-600 dark:text-slate-300">
-                                    EN
-                                </button>
+                              <li className="flex items-center space-x-2 text-sm">
+    <button onClick={() => window.translateLanguage('zh-TW')} className="hover:text-blue-600">中文</button>
+    <span className="text-gray-300">|</span>
+    <button onClick={() => window.translateLanguage('en')} className="hover:text-blue-600">EN</button>
+    <div id="google_translate_element"></div>
+</li>
                             </div>
                         </div>
                         
@@ -875,5 +883,31 @@ const ProjectsPage = () => {
             </MemoryRouter>
         );
     </script>
+    <script type="text/javascript">
+    function googleTranslateElementInit() {
+        new google.translate.TranslateElement({
+            pageLanguage: 'zh-TW',
+            includedLanguages: 'en,zh-TW',
+            autoDisplay: false 
+        }, 'google_translate_element');
+    }
+
+    window.translateLanguage = function(lang) {
+        var frame = document.querySelector('.goog-te-menu-frame');
+        if (!frame) return;
+        var innerDoc = frame.contentDocument || frame.contentWindow.document;
+        var items = innerDoc.getElementsByClassName('goog-te-menu2-item');
+        for (var i = 0; i < items.length; i++) {
+            var text = items[i].textContent || items[i].innerText;
+            if (lang === 'en' && text.includes('English')) {
+                items[i].click(); return;
+            } else if (lang === 'zh-TW' && (text.includes('中文') || text.includes('繁體'))) {
+                var restore = innerDoc.querySelector('.goog-te-menu2-item-selected');
+                if (restore) items[i].click(); return;
+            }
+        }
+    };
+</script>
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
 </html>
