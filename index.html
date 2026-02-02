@@ -13,11 +13,12 @@
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <style>
-    /* 強制隱藏 Google 翻譯 UI */
-    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt { display: none !important; }
+<style>
+    /* 徹底隱藏 Google 翻譯 UI 與彈出視窗 */
+    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
     body { top: 0px !important; position: static !important; }
     #google_translate_element { display: none; }
+    .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
 </style>
     <!-- React & Router Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
@@ -124,11 +125,16 @@
                               
                             </nav>
                             <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
-                              <li className="flex items-center space-x-2 text-sm">
-    <button onClick={() => window.translateLanguage('zh-TW')} className="hover:text-blue-600">中文</button>
+<li className="flex items-center space-x-2 text-sm font-medium">
+    <button 
+        onClick={() => window.translateLanguage('zh-TW')} 
+        className="hover:text-blue-600 transition-colors"
+    >中文</button>
     <span className="text-gray-300">|</span>
-    <button onClick={() => window.translateLanguage('en')} className="hover:text-blue-600">EN</button>
-    <div id="google_translate_element"></div>
+    <button 
+        onClick={() => window.translateLanguage('en')} 
+        className="hover:text-blue-600 transition-colors"
+    >EN</button>
 </li>
                             </div>
                         </div>
@@ -883,27 +889,44 @@ const ProjectsPage = () => {
             </MemoryRouter>
         );
     </script>
-    <script type="text/javascript">
+<div id="google_translate_element"></div>
+<script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
-            pageLanguage: 'zh-TW',
+            pageLanguage: 'zh-TW', // 預設頁面語言
             includedLanguages: 'en,zh-TW',
-            autoDisplay: false 
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+            autoDisplay: false // 禁止自動跳出翻譯建議
         }, 'google_translate_element');
     }
 
     window.translateLanguage = function(lang) {
-        var frame = document.querySelector('.goog-te-menu-frame');
+        const frame = document.querySelector('.goog-te-menu-frame');
         if (!frame) return;
-        var innerDoc = frame.contentDocument || frame.contentWindow.document;
-        var items = innerDoc.getElementsByClassName('goog-te-menu2-item');
-        for (var i = 0; i < items.length; i++) {
-            var text = items[i].textContent || items[i].innerText;
-            if (lang === 'en' && text.includes('English')) {
-                items[i].click(); return;
-            } else if (lang === 'zh-TW' && (text.includes('中文') || text.includes('繁體'))) {
-                var restore = innerDoc.querySelector('.goog-te-menu2-item-selected');
-                if (restore) items[i].click(); return;
+        const innerDoc = frame.contentDocument || frame.contentWindow.document;
+        
+        if (lang === 'zh-TW') {
+            // 修復中文按鈕：尋找並點擊「顯示原文」按鈕
+            const restoreBtn = innerDoc.querySelector('.goog-te-menu2-item span.text:contains("顯示原文")') || 
+                               innerDoc.querySelector('.goog-te-menu2-item span.text:contains("Original")') ||
+                               innerDoc.querySelector('.goog-te-menu2-item'); // 備案
+            
+            // 另一種最有效恢復原創中文的方法：點擊 Google 翻譯橫幅內的「顯示原文」標籤
+            const iframe = document.querySelector('.goog-te-banner-frame');
+            if (iframe) {
+                const shadowDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const closeBtn = shadowDoc.querySelector('.goog-close-link') || shadowDoc.getElementById(':1.restore');
+                if (closeBtn) closeBtn.click();
+            }
+            return;
+        }
+
+        // 翻譯成英文
+        const items = innerDoc.getElementsByClassName('goog-te-menu2-item');
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].textContent.includes('English') || items[i].textContent.includes('英文')) {
+                items[i].click();
+                return;
             }
         }
     };
