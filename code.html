@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html class="light" lang="zh-TW">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>宇碩光 | Athene Technology Corp.</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    
+    <!-- React & Router Dependencies -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#2b8cee",
+                        "primary-dark": "#1a6bb5",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101922",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1c2530",
+                        "text-main": "#0d141b",
+                        "text-main-dark": "#e2e8f0",
+                        "text-sub": "#4c739a",
+                        "text-sub-dark": "#94a3b8",
+                        "border-light": "#e7edf3",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
+                        "body": ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+    
+    <style type="text/tailwindcss">
+        @layer base {
+            body {
+                @apply font-body bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden transition-colors duration-300;
+            }
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+        const { createRoot } = ReactDOM;
+        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
+
+        // --- Shared Components ---
+
+        const Header = () => {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const location = useLocation();
+            
+            const navLinks = [
+{ name: '首頁', path: '/' },
+    { name: '產品介紹', path: '/products' },
+    { name: '設計案例', path: '/projects' }, // 新增這行
+    { name: '聯絡我們', path: '/contact' }
+            ];
+
+            return (
+                <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
+                    <div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
+                        <Link to="/" class="flex items-center gap-3">
+                            <div class="text-primary">
+                                <div class="text-primary">
+    <img src="/works/logo.svg" alt="宇碩光" class="h-8 w-auto block" />
+    </div>
+                            </div>
+                            <div class="flex flex-col leading-none">
+                                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">宇碩光</h1>
+                                <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-medium">Athene Technology</span>
+                            </div>
+                        </Link>
+                        
+                        <div class="hidden md:flex flex-1 justify-end gap-10 items-center">
+                            <nav class="flex gap-8">
+                                {navLinks.map(link => (
+                                    <Link 
+                                        key={link.path}
+                                        to={link.path} 
+                                        class={`text-sm font-medium hover:text-primary transition-colors ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
+                                    >
+                                        {link.name}
+                                    </Link>
+                                ))}
+                              
+                            </nav>
+                            <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
+                                <button class="flex h-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 px-4 text-xs font-bold tracking-widest hover:bg-primary hover:text-white transition-all text-slate-600 dark:text-slate-300">
+                                    EN
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <button onClick={() => setIsMenuOpen(!isMenuOpen)} class="md:hidden text-slate-900 dark:text-white">
+                            <span class="material-symbols-outlined">{isMenuOpen ? 'close' : 'menu'}</span>
+                        </button>
+                    </div>
+
+                    {/* Mobile Menu */}
+                    {isMenuOpen && (
+                        <div class="md:hidden bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4">
+                            {navLinks.map(link => (
+                                <Link 
+                                    key={link.path}
+                                    to={link.path} 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    class={`text-base font-medium ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </header>
+            );
+        };
+
+        const Footer = () => (
+            <footer class="bg-slate-50 dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-20 pb-10">
+                <div class="max-w-7xl mx-auto px-6 w-full">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
+                        <div class="col-span-1 md:col-span-1 flex flex-col gap-6">
+                            <div class="flex items-center gap-3 text-slate-900 dark:text-white">
+                              <div class="flex items-center">
+    <img src="/works/logo.svg" alt="宇碩光" class="h-10 w-auto" />
+</div>
+                                <div class="flex flex-col leading-tight">
+                                    <span class="font-bold text-xl">宇碩光</span>
+                                    <span class="text-[9px] uppercase tracking-widest text-slate-400">Athene Tech</span>
+                                </div>
+                            </div>
+                            <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                                開創光學與光電技術的未來，致力於建構更清晰、更精準的世界。
+                            </p>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">公司資訊</h5>
+                            <Link class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" to="/">關於我們</Link>
+                            <Link 
+    to="/contact" 
+    className="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
+>
+    加入我們
+</Link>
+                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">最新動態</a>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">解決方案</h5>
+                            <Link class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" to="/products">精密光學</Link>
+                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">雷射整合</a>
+                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">影像感測</a>
+                        </div>
+                        <div class="flex flex-col gap-4">
+                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">聯絡我們</h5>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">joey@athene-tech.com</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">+886 2 8521 8383</p>
+                            <div class="flex gap-4 mt-2">
+                                <a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-xl">public</span></a>
+                                <Link 
+    to="/contact" 
+    className="text-slate-400 hover:text-primary transition-colors"
+>
+    <span className="material-symbols-outlined text-xl">mail</span>
+</Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <p class="text-xs text-slate-400 font-light tracking-wide">© 2024 宇碩光 Athene Technology Corp. 版權所有.</p>
+                        <div class="flex gap-8">
+                            <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">隱私政策</a>
+                            <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">使用條款</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+
+        // --- Page Components ---
+
+        const HomePage = () => {
+            const navigate = useNavigate();
+            return (
+                <main class="flex-grow">
+                    <section class="relative w-full">
+                        <div class="@container">
+                            <div class="flex min-h-[700px] flex-col gap-8 bg-cover bg-center bg-no-repeat items-center justify-center p-8 relative" style={{backgroundImage: 'linear-gradient(rgba(16, 25, 34, 0.5) 0%, rgba(16, 25, 34, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw")'}}>
+                                <div class="max-w-4xl flex flex-col gap-6 text-center z-10">
+                                    <h1 class="text-white text-5xl md:text-8xl font-bold leading-tight tracking-tight">光學技術的領航者</h1>
+                                    <h2 class="text-slate-100 text-lg md:text-2xl font-light max-w-3xl mx-auto leading-relaxed tracking-wide opacity-90">
+                                        宇碩光專注於尖端光電技術研發，為次世代科技提供精準的工業應用與光學合理解決方案。
+                                    </h2>
+                                    <div class="pt-8 flex justify-center gap-4">
+                                        <button onClick={() => navigate('/projects')} class="cursor-pointer inline-flex items-center justify-center rounded-lg h-14 px-10 bg-primary hover:bg-blue-600 text-white text-base font-bold tracking-widest transition-all shadow-xl hover:shadow-primary/30">
+                                            探索光學方案
+                                        </button>
+                                        <button onClick={() => navigate('/contact')} class="cursor-pointer inline-flex items-center justify-center rounded-lg h-14 px-10 border border-white/30 bg-white/10 hover:bg-white/20 text-white text-base font-bold tracking-widest transition-all backdrop-blur-sm">
+                                            了解更多
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 px-4 md:px-8 bg-background-light dark:bg-background-dark">
+                        <div class="max-w-7xl mx-auto w-full">
+                            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                                <div class="w-full lg:w-1/2">
+                                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded-xl shadow-2xl relative overflow-hidden group" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo")'}}>
+                                        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500"></div>
+                                    </div>
+                                </div>
+                                <div class="w-full lg:w-1/2 flex flex-col gap-8 lg:pl-10">
+                                    <div class="flex items-center gap-3 text-primary font-bold tracking-[0.2em] uppercase text-sm">
+                                        <span class="w-12 h-[2px] bg-primary"></span> 關於我們
+                                    </div>
+                                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">重新定義光學工程的未來</h2>
+                                    <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+                                        宇碩光（Athene Technology Corp.）立足於精密工程與先進材料的交匯點。我們不只是處理光學，我們更是工程化光學表現，使其在醫療、工業與科學研究等關鍵領域發揮極致效能。
+                                    </p>
+                                    <p class="text-slate-600 dark:text-slate-300 text-base leading-relaxed">
+                                        從客製化鏡頭模組到高耐用性鍍膜，我們的解決方案深受全球創新領導者的信賴，在極端環境中提供卓越的清晰度與性能表現。
+                                    </p>
+                                    <div class="pt-4">
+                                        <button onClick={() => navigate('/contact')} class="text-primary font-bold hover:text-blue-400 transition-colors inline-flex items-center gap-2 group text-lg">
+                                            深入了解宇碩光
+                                            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="py-24 px-4 md:px-8 bg-white dark:bg-[#15202b] border-y border-slate-100 dark:border-slate-800">
+                        <div class="max-w-7xl mx-auto w-full flex flex-col gap-16">
+                            <div class="flex flex-col gap-4 text-center items-center">
+                                <h2 class="text-slate-900 dark:text-white text-4xl md:text-5xl font-bold leading-tight">核心技術</h2>
+                                <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl font-light">宇碩光科技的三大核心支柱，引領光電創新。</p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
+                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl">lens</span>
+                                    </div>
+                                    <div class="flex flex-col gap-4">
+                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">精密光學元件</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">提供次微米精度的客製化鏡頭與高耐用光學鍍膜，專為極端工業與醫療環境設計。</p>
+                                    </div>
+                                </div>
+                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
+                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl">hub</span>
+                                    </div>
+                                    <div class="flex flex-col gap-4">
+                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">雷射系統整合</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">應用於工業切割、增材製造與精密醫療手術的高功率雷射系統開發與軟硬體整合。</p>
+                                    </div>
+                                </div>
+                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
+                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                                        <span class="material-symbols-outlined text-4xl">center_focus_strong</span>
+                                    </div>
+                                    <div class="flex flex-col gap-4">
+                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">影像傳感方案</h3>
+                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">新世代感測器陣列與影像處理單元，適用於科學研究與智慧自動化檢測。</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+        const ProductsPage = () => {
+            const categories = [
+                { icon: 'photo_camera', name: '光學元件', active: true },
+                { icon: 'lightbulb', name: '照明方案' },
+                { icon: 'diamond', name: '晶體光學' },
+                { icon: 'layers', name: '鍍膜服務' },
+                { icon: 'science', name: '實驗室設備' }
+            ];
+
+// 1. 定義分類產品資料庫
+            const allProducts = {
+                '光學元件': [
+                    {
+                        id: 1,
+                        tag: '現貨',
+                        tagColor: 'green',
+                        title: 'N-BK7 平凸透鏡',
+                        model: 'PLCX-25.4-51.5-C',
+                        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw', // 您可以更換為您的圖檔路徑
+                        specs: [
+                            { label: '直徑', value: '25.4 mm' },
+                            { label: '焦距', value: '50.0 mm' },
+                            { label: '鍍膜', value: 'MgF2 AR', highlight: true }
+                        ]
+                    },
+                    {
+                        id: 2,
+                        tag: '新品',
+                        tagColor: 'blue',
+                        title: 'UV 熔融石英視窗',
+                        model: 'WFS-50.8-3.0-UV',
+                        specs: [
+                            { label: '直徑', value: '50.8 mm' },
+                            { label: '厚度', value: '3.0 mm' },
+                            { label: '平面度', value: 'λ/20' }
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: 'N-BK7 直角稜鏡',
+                        model: 'PS9-25.0-C',
+                        specs: [
+                            { label: '邊長', value: '25.0 mm' },
+                            { label: '表面質量', value: '40-20' },
+                            { label: '通光孔徑', value: '>90%' }
+                        ]
+                    }
+                ],
+                '照明方案': [
+                    {
+                        id: 101,
+                        tag: '新品',
+                        tagColor: 'blue',
+                        title: '高均勻性環形光源',
+                        model: 'ATH-RL-100-W',
+                        image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo', // 加入照明產品圖片
+                        specs: [
+                            { label: '外徑', value: '100 mm' },
+                            { label: '顏色', value: '白色 (5500K)' },
+                            { label: '工作距離', value: '50-150 mm', highlight: true }
+                        ]
+                    },
+                    {
+                        id: 102,
+                        title: '平行同軸光源',
+                        model: 'ATH-CO-50-R',
+                        specs: [
+                            { label: '發光面積', value: '50x50 mm' },
+                            { label: '顏色', value: '紅色 (625nm)' },
+                            { label: '應用', value: '高反射表面檢測' }
+                        ]
+                    }
+                ]
+            };
+
+            // 2. 加入分類切換狀態 (預設為光學元件)
+            const [activeCategory, setActiveCategory] = useState('光學元件');
+
+            // 3. 取得目前選中分類的產品
+            const products = allProducts[activeCategory] || [];
+
+            return (
+                <div class="flex-1 max-w-7xl mx-auto w-full flex flex-col lg:flex-row">
+                    <aside class="w-full lg:w-64 flex-none lg:border-r border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark lg:min-h-[calc(100vh-64px)]">
+                        <div class="lg:sticky lg:top-16 p-4 space-y-6">
+                            <div class="hidden lg:block">
+                                <h1 class="text-base font-bold mb-1">產品分類</h1>
+                                <p class="text-text-sub dark:text-text-sub-dark text-xs">瀏覽我們的光學產品目錄</p>
+                            </div>
+                         <div class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 scrollbar-hide">
+                                {categories.map(cat => (
+                                    <div 
+                                        key={cat.name} 
+                                        onClick={() => setActiveCategory(cat.name)} // 加入此行：點擊後切換狀態
+                                        class={`flex-none flex items-center gap-3 px-3 py-2 rounded-lg border shadow-sm cursor-pointer group min-w-[160px] lg:min-w-0 transition-all ${activeCategory === cat.name ? 'bg-white dark:bg-surface-dark border-border-light dark:border-border-dark' : 'hover:bg-white dark:hover:bg-surface-dark border-transparent text-text-sub dark:text-text-sub-dark hover:text-text-main dark:hover:text-text-main-dark'}`}
+                                    >
+                                        <span class={`material-symbols-outlined ${activeCategory === cat.name ? 'text-primary scale-110' : 'group-hover:text-primary transition-colors'}`}>{cat.icon}</span>
+                                        <p class="text-sm font-medium whitespace-nowrap">{cat.name}</p>
+                                    </div>
+                                ))}
+                            </div>
+                            <div class="hidden lg:block p-4 bg-primary/5 rounded-xl border border-primary/10 mt-8">
+                                <p class="text-xs font-bold text-primary mb-2">需要客製化規格？</p>
+                                <p class="text-xs text-text-sub dark:text-text-sub-dark mb-3">我們的研發團隊提供專業的客製化鍍膜與製造服務。</p>
+                                <Link 
+        to="/contact" 
+        class="text-xs font-bold underline decoration-primary underline-offset-2 hover:text-primary transition-colors"
+    >
+        聯繫工程團隊 →
+    </Link>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <main class="flex-1 p-4 sm:p-6 lg:p-8 overflow-y-auto">
+                        <nav class="flex flex-wrap gap-2 mb-6 text-sm">
+                            <Link class="text-text-sub dark:text-text-sub-dark hover:text-primary" to="/">首頁</Link>
+                            <span class="text-text-sub dark:text-text-sub-dark">/</span>
+                            <span class="font-medium text-text-main dark:text-white">產品介紹 / 光學元件</span>
+                        </nav>
+                        <div class="mb-8">
+                            <div class="max-w-3xl">
+                                <h1 class="text-3xl sm:text-4xl font-black tracking-tight mb-3 text-text-main dark:text-white">高精密平凸透鏡</h1>
+                                <p class="text-text-sub dark:text-text-sub-dark text-base sm:text-lg leading-relaxed">
+                                    提供優質級 N-BK7 和熔融石英 (Fused Silica) 透鏡，專為光電應用優化。
+                                    可選配適用於可見光及近紅外光譜的減反射 (AR) 鍍膜。
+                                    製造標準符合 <span class="font-mono text-primary bg-primary/10 px-1 rounded">λ/10</span> 表面不規則度。
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="sticky top-0 lg:static z-10 bg-background-light dark:bg-background-dark py-2 mb-6">
+                            <div class="flex flex-col sm:flex-row gap-4 p-1">
+                                <div class="relative flex-1">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <span class="material-symbols-outlined text-text-sub dark:text-text-sub-dark">search</span>
+                                    </div>
+                                    <input class="block w-full pl-10 pr-3 py-2.5 border-none rounded-lg bg-white dark:bg-surface-dark ring-1 ring-border-light dark:ring-border-dark focus:ring-2 focus:ring-primary text-sm placeholder:text-text-sub dark:placeholder:text-text-sub-dark" placeholder="搜尋料號、焦距或材質..." type="text"/>
+                                </div>
+                                <div class="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
+                                    <button class="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg text-sm font-medium whitespace-nowrap hover:border-primary/50 transition-colors">
+                                        <span>材質</span><span class="material-symbols-outlined text-base">expand_more</span>
+                                    </button>
+                                    <button class="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg text-sm font-medium whitespace-nowrap hover:border-primary/50 transition-colors">
+                                        <span>直徑</span><span class="material-symbols-outlined text-base">expand_more</span>
+                                    </button>
+                                    <button class="flex items-center justify-center px-4 py-2.5 bg-white dark:bg-surface-dark border border-border-light dark:border-border-dark rounded-lg text-text-sub dark:text-text-sub-dark hover:text-primary transition-colors ml-auto sm:ml-0">
+                                        <span class="material-symbols-outlined">filter_list</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {products.map(product => (
+                                <div key={product.id} class="group bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden hover:shadow-lg hover:border-primary/30 transition-all duration-300 flex flex-col">
+                                    <div class="h-56 p-6 bg-slate-50 dark:bg-[#151e29] relative flex items-center justify-center border-b border-border-light dark:border-border-dark">
+                                        {product.tag && (
+                                            <div class={`absolute top-3 left-3 px-2 py-1 ${product.tagColor === 'green' ? 'bg-green-100 text-green-700 border-green-200' : 'bg-blue-100 text-blue-700 border-blue-200'} text-[10px] font-bold uppercase tracking-wider rounded border`}>
+                                                {product.tag}
+                                            </div>
+                                        )}
+                                        <div class="relative w-32 h-32 rounded-full bg-gradient-to-br from-blue-100 to-white dark:from-slate-700 dark:to-slate-800 shadow-inner flex items-center justify-center">
+                                             <span class="material-symbols-outlined text-5xl text-primary/40">lens</span>
+                                        </div>
+                                    </div>
+                                    <div class="p-5 flex flex-col flex-1">
+                                        <div class="mb-2">
+                                            <h3 class="font-bold text-lg text-text-main dark:text-white group-hover:text-primary transition-colors">{product.title}</h3>
+                                            <p class="text-xs font-mono text-text-sub dark:text-text-sub-dark">{product.model}</p>
+                                        </div>
+                                        <div class="grid grid-cols-2 gap-y-2 gap-x-4 text-xs mt-4 mb-6 pt-4 border-t border-dashed border-border-light dark:border-border-dark">
+                                            {product.specs.map(spec => (
+                                                <React.Fragment key={spec.label}>
+                                                    <div class="text-text-sub dark:text-text-sub-dark">{spec.label}</div>
+                                                    <div class={`font-medium text-right ${spec.highlight ? 'text-primary' : ''}`}>{spec.value}</div>
+                                                </React.Fragment>
+                                            ))}
+                                        </div>
+                                        <div class="mt-auto flex gap-3">
+                                            <button class="flex-1 bg-primary hover:bg-primary-dark text-white text-sm font-bold py-2.5 px-4 rounded-lg transition-colors shadow-sm shadow-primary/20">查看規格</button>
+                                            <button class="p-2.5 text-text-sub dark:text-text-sub-dark hover:text-primary hover:bg-primary/5 rounded-lg border border-border-light dark:border-border-dark transition-colors" title="下載型錄">
+                                                <span class="material-symbols-outlined text-xl">description</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div class="flex justify-center mt-12 mb-8">
+                            <nav class="flex items-center gap-2">
+                                <button class="p-2 rounded-lg border border-border-light dark:border-border-dark text-text-sub dark:text-text-sub-dark hover:bg-white dark:hover:bg-surface-dark transition-colors">
+                                    <span class="material-symbols-outlined">chevron_left</span>
+                                </button>
+                                <button class="w-10 h-10 rounded-lg bg-primary text-white font-bold text-sm">1</button>
+                                <button class="w-10 h-10 rounded-lg border border-border-light dark:border-border-dark text-text-sub dark:text-text-sub-dark hover:bg-white dark:hover:bg-surface-dark font-medium text-sm transition-colors">2</button>
+                                <button class="w-10 h-10 rounded-lg border border-border-light dark:border-border-dark text-text-sub dark:text-text-sub-dark hover:bg-white dark:hover:bg-surface-dark font-medium text-sm transition-colors">3</button>
+                                <span class="text-text-sub dark:text-text-sub-dark px-2">...</span>
+                                <button class="p-2 rounded-lg border border-border-light dark:border-border-dark text-text-sub dark:text-text-sub-dark hover:bg-white dark:hover:bg-surface-dark transition-colors">
+                                    <span class="material-symbols-outlined">chevron_right</span>
+                                </button>
+                            </nav>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+const ProjectsPage = () => {
+    const [activeFilter, setActiveFilter] = useState('全部');
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [currentSlide, setCurrentSlide] = useState(0);
+
+    const categories = ['全部', '商業', '文化', '基礎設施', '辦公空間', '展覽'];
+
+    // 模擬專案數據，包含 5 張圖片供輪播
+    const projects = [
+        { 
+            id: 1, 
+            category: '商業', 
+            title: '嘉義康倪時代美學莊園', 
+            location: 'CHIAYI, TAIWAN', 
+            images: [
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo', // 替換為實際圖片路徑
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
+            ],
+            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
+            year: '2023',
+            client: '康倪集團',
+            categoryText: 'Commercial Lighting'
+        },
+         { 
+            id: 1, 
+            category: '商業', 
+            title: '嘉義康倪時代美學莊園', 
+            location: 'CHIAYI, TAIWAN', 
+            images: [
+                'https://picsum.photos/id/400/200/300', // 替換為實際圖片路徑
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
+            ],
+            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
+            year: '2023',
+            client: '康倪集團',
+            categoryText: 'Commercial Lighting'
+        },
+         { 
+            id: 1, 
+            category: '商業', 
+            title: '嘉義康倪時代美學莊園', 
+            location: 'CHIAYI, TAIWAN', 
+            images: [
+                'https://picsum.photos/id/30/200/300', // 替換為實際圖片路徑
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
+            ],
+            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
+            year: '2023',
+            client: '康倪集團',
+            categoryText: 'Commercial Lighting'
+        },
+         { 
+            id: 1, 
+            category: '商業', 
+            title: '嘉義康倪時代美學莊園', 
+            location: 'CHIAYI, TAIWAN', 
+            images: [
+                'https://picsum.photos/id/238/200/300', // 替換為實際圖片路徑
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
+                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
+            ],
+            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
+            year: '2023',
+            client: '康倪集團',
+            categoryText: 'Commercial Lighting'
+        },
+        // 可依此格式新增其他專案...
+    ];
+
+    // --- 自動輪播邏輯 (10秒) ---
+    useEffect(() => {
+        let timer;
+        if (selectedProject && selectedProject.images) {
+            timer = setInterval(() => {
+                setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
+            }, 10000); // 10000 毫秒 = 10 秒
+        }
+        return () => clearInterval(timer);
+    }, [selectedProject]);
+
+    const filteredProjects = activeFilter === '全部' ? projects : projects.filter(p => p.category === activeFilter);
+
+    // --- 詳情頁面：滿版輪播 + 右側文字 ---
+    if (selectedProject) {
+        return (
+            <main className="fixed inset-0 z-[60] bg-white dark:bg-background-dark flex flex-col lg:flex-row overflow-hidden animate-in fade-in duration-700">
+                {/* 左側：滿版輪播區域 */}
+                <div className="relative w-full lg:w-[68%] h-[45vh] lg:h-full bg-slate-900 overflow-hidden">
+                    {selectedProject.images.map((img, idx) => (
+                        <div 
+                            key={idx}
+                            className={`absolute inset-0 transition-opacity duration-[1500ms] ease-in-out ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}
+                        >
+                            <img src={img} className="w-full h-full object-cover" alt={`${selectedProject.title}-${idx}`} />
+                        </div>
+                    ))}
+                    
+                    {/* 左下角專案名稱標註 (參考附圖風格) */}
+                    <div className="absolute bottom-8 left-8 z-10">
+                        <p className="text-white/80 text-xs tracking-widest font-light shadow-sm">
+                            {selectedProject.title}
+                        </p>
+                    </div>
+
+                    {/* 右下角點狀指示器 (.....) */}
+                    <div className="absolute bottom-8 right-8 z-10 flex gap-2">
+                        {selectedProject.images.map((_, idx) => (
+                            <button 
+                                key={idx}
+                                onClick={() => setCurrentSlide(idx)}
+                                className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'}`}
+                                aria-label={`Go to slide ${idx + 1}`}
+                            />
+                        ))}
+                    </div>
+
+                    {/* 返回按鈕 */}
+                    <button 
+                        onClick={() => { setSelectedProject(null); setCurrentSlide(0); }}
+                        className="absolute top-8 left-8 z-20 flex items-center gap-2 text-white bg-black/30 backdrop-blur-md px-5 py-2.5 rounded-full hover:bg-primary transition-all group"
+                    >
+                        <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
+                        <span className="text-xs font-bold tracking-[0.2em]">BACK</span>
+                    </button>
+                </div>
+
+                {/* 右側：固定文字介紹區域 */}
+                <div className="w-full lg:w-[32%] h-full overflow-y-auto bg-white dark:bg-surface-dark px-8 py-12 lg:px-12 lg:py-20 flex flex-col border-l border-slate-100 dark:border-slate-800">
+                    <div className="mb-10">
+                        <span className="text-primary text-[10px] font-black tracking-[0.4em] uppercase mb-4 block">
+                            {selectedProject.categoryText || 'PROJECT DETAIL'}
+                        </span>
+                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white leading-tight mb-4">
+                            {selectedProject.title}
+                        </h1>
+                        <p className="text-slate-400 text-sm tracking-[0.15em] font-medium">
+                            {selectedProject.location}
+                        </p>
+                    </div>
+
+                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-12 mb-10"></div>
+
+                    <div className="flex-1">
+                        <p className="text-slate-600 dark:text-slate-300 leading-[2.2] text-[15px] font-light text-justify">
+                            {selectedProject.description}
+                        </p>
+                    </div>
+
+                    <div className="mt-12 space-y-4 border-t border-slate-50 dark:border-slate-800 pt-8">
+                        <div className="flex justify-between items-end">
+                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Year</span>
+                            <span className="text-sm font-medium">{selectedProject.year}</span>
+                        </div>
+                        <div className="flex justify-between items-end">
+                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Client</span>
+                            <span className="text-sm font-medium">{selectedProject.client}</span>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        );
+    }
+
+    // --- 列表頁面保持不變 ---
+    return (
+        <main className="flex-1 bg-white dark:bg-background-dark">
+            <section className="px-6 py-20 border-b border-slate-50 dark:border-slate-800">
+                <div className="max-w-7xl mx-auto">
+                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 italic tracking-tight">設計案例</h1>
+                    <p className="text-slate-400 dark:text-slate-500 tracking-[0.3em] uppercase text-xs font-bold">Design Projects</p>
+                </div>
+            </section>
+
+            <nav className="sticky top-16 z-30 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
+                <div className="max-w-7xl mx-auto px-6 py-5">
+                    <div className="flex gap-8 overflow-x-auto scrollbar-hide">
+                        {categories.map(cat => (
+                            <button 
+                                key={cat}
+                                onClick={() => setActiveFilter(cat)}
+                                className={`text-sm whitespace-nowrap transition-all ${activeFilter === cat ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white pb-1'}`}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </nav>
+
+            <section className="px-6 py-16">
+                <div className="max-w-7xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
+                        {filteredProjects.map(project => (
+                            <div key={project.id} className="group cursor-pointer" onClick={() => setSelectedProject(project)}>
+                                <div className="aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800 mb-6 relative">
+                                    <img 
+                                        src={project.images ? project.images[0] : project.image} 
+                                        alt={project.title} 
+                                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                        <span className="text-white text-xs font-bold tracking-[0.3em] border border-white px-4 py-2">VIEW</span>
+                                    </div>
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{project.title}</h3>
+                                <p className="text-xs text-slate-400 tracking-widest mt-1 uppercase">{project.location}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+        </main>
+    );
+};
+        const ContactPage = () => {
+            return (
+                <main class="flex-1">
+                    <section class="relative px-6 py-16 md:py-24">
+                        <div class="mx-auto max-w-7xl">
+                            <div class="max-w-3xl">
+                                <h1 class="text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4 text-slate-900 dark:text-white">聯絡我們</h1>
+                                <p class="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-light leading-relaxed">
+                                    期待與您的合作。讓我們以精密的光學技術與先進的光電解決方案，共同照亮未來。
+                                </p>
+                            </div>
+                        </div>
+                        <div class="absolute top-0 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
+                    </section>
+                    
+                    <section class="px-6 pb-20">
+                        <div class="mx-auto max-w-7xl">
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+                                <div class="lg:col-span-7">
+                                    <div class="mb-8">
+                                        <h3 class="text-2xl font-bold tracking-tight mb-2">發送訊息</h3>
+                                        <p class="text-slate-500 dark:text-slate-400">我們的團隊通常會在 24 小時內回覆您的需求。</p>
+                                    </div>
+                                    <form class="space-y-6">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <label class="flex flex-col gap-2">
+                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">姓名</span>
+                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請輸入您的姓名" type="text"/>
+                                            </label>
+                                            <label class="flex flex-col gap-2">
+                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">公司名稱</span>
+                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請輸入公司名稱" type="text"/>
+                                            </label>
+                                        </div>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <label class="flex flex-col gap-2">
+                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">電子郵件</span>
+                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="example@athene-tech.com" type="email"/>
+                                            </label>
+                                            <label class="flex flex-col gap-2">
+                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">主旨</span>
+                                                <div class="relative">
+                                                    <select class="h-12 w-full appearance-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary">
+                                                        <option>一般諮詢</option>
+                                                        <option>產品支援</option>
+                                                        <option>業務合作</option>
+                                                        <option>媒體公關</option>
+                                                    </select>
+                                                    <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500">expand_more</span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <label class="flex flex-col gap-2">
+                                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">內容</span>
+                                            <textarea class="h-32 w-full resize-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請描述您的需求，我們將竭誠為您服務。"></textarea>
+                                        </label>
+                                        <button class="inline-flex h-12 min-w-[160px] items-center justify-center rounded-lg bg-primary px-6 font-bold text-white shadow-sm hover:bg-blue-600 transition-all" type="button">提交訊息</button>
+                                    </form>
+                                </div>
+                                <div class="lg:col-span-5 flex flex-col gap-8">
+                                    <div class="rounded-xl bg-slate-100 dark:bg-slate-800/50 p-8 border border-slate-200 dark:border-slate-700/50">
+                                        <h4 class="text-lg font-bold mb-6 flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-primary">hub</span> 公司資訊
+                                        </h4>
+                                        <div class="space-y-6">
+                                            <div class="flex items-start gap-4">
+                                                <div class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white dark:bg-slate-700 text-primary shadow-sm">
+                                                    <span class="material-symbols-outlined text-[20px]">location_on</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">地址</p>
+                                                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">242040 新北市新莊區化成路186號2樓</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-start gap-4">
+                                                <div class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white dark:bg-slate-700 text-primary shadow-sm">
+                                                    <span class="material-symbols-outlined text-[20px]">call</span>
+                                                </div>
+                                                <div>
+                                                    <p class="font-medium text-slate-900 dark:text-white">電話</p>
+                                                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1"> 02 8521 8383</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+<div class="h-64 w-full overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-sm">
+    <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.6496853855256!2d121.46566990000001!3d25.0459599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a9a2288fc4c5%3A0xa7f2e36db772cae2!2z5a6H56Kp5YWJ!5e0!3m2!1szh-TW!2stw!4v1770002220544!5m2!1szh-TW!2stw" 
+        width="100%" 
+        height="100%" 
+        style={{ border: 0 }} 
+        allowFullScreen="" 
+        loading="lazy" 
+        referrerPolicy="no-referrer-when-downgrade">
+    </iframe>
+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            );
+        };
+
+        // --- Main App ---
+
+        const App = () => {
+            const { pathname } = useLocation();
+
+            // Scroll to top on route change
+            useEffect(() => {
+                window.scrollTo(0, 0);
+            }, [pathname]);
+
+            return (
+                <div class="relative flex flex-col min-h-screen w-full">
+                    <Header />
+                    <Routes>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/products" element={<ProductsPage />} />
+                        <Route path="/projects" element={<ProjectsPage />} />
+                        <Route path="/contact" element={<ContactPage />} />
+                    </Routes>
+                    <Footer />
+                </div>
+            );
+        };
+
+        const root = createRoot(document.getElementById('root'));
+        root.render(
+            <MemoryRouter>
+                <App />
+            </MemoryRouter>
+        );
+    </script>
+</body>
+</html>
