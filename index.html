@@ -14,7 +14,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 <style>
-    /* 徹底隱藏 Google 翻譯 UI 與彈出視窗 */
+    /* 隱藏 Google 翻譯 UI */
     .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
     body { top: 0px !important; position: static !important; }
     #google_translate_element { display: none; }
@@ -130,7 +130,7 @@
         onClick={() => window.translateLanguage('zh-TW')} 
         className="hover:text-blue-600 transition-colors"
     >中文</button>
-    <span className="text-gray-300">|</span>
+    <span className="text-gray-400">|</span>
     <button 
         onClick={() => window.translateLanguage('en')} 
         className="hover:text-blue-600 transition-colors"
@@ -890,13 +890,14 @@ const ProjectsPage = () => {
         );
     </script>
 <div id="google_translate_element"></div>
+<div id="google_translate_element"></div>
+
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
-            pageLanguage: 'zh-TW', // 預設頁面語言
+            pageLanguage: 'zh-TW', 
             includedLanguages: 'en,zh-TW',
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false // 禁止自動跳出翻譯建議
+            autoDisplay: false 
         }, 'google_translate_element');
     }
 
@@ -906,25 +907,24 @@ const ProjectsPage = () => {
         const innerDoc = frame.contentDocument || frame.contentWindow.document;
         
         if (lang === 'zh-TW') {
-            // 修復中文按鈕：尋找並點擊「顯示原文」按鈕
-            const restoreBtn = innerDoc.querySelector('.goog-te-menu2-item span.text:contains("顯示原文")') || 
-                               innerDoc.querySelector('.goog-te-menu2-item span.text:contains("Original")') ||
-                               innerDoc.querySelector('.goog-te-menu2-item'); // 備案
-            
-            // 另一種最有效恢復原創中文的方法：點擊 Google 翻譯橫幅內的「顯示原文」標籤
+            // 修復中文鈕：嘗試點擊 Google 的恢復原文 (Restore)
             const iframe = document.querySelector('.goog-te-banner-frame');
             if (iframe) {
                 const shadowDoc = iframe.contentDocument || iframe.contentWindow.document;
-                const closeBtn = shadowDoc.querySelector('.goog-close-link') || shadowDoc.getElementById(':1.restore');
-                if (closeBtn) closeBtn.click();
+                const restoreBtn = shadowDoc.getElementById(':1.restore') || shadowDoc.querySelector('.goog-close-link');
+                if (restoreBtn) { restoreBtn.click(); return; }
             }
+            // 備案：點擊選單中的第一個選項（通常是原文）
+            const firstItem = innerDoc.querySelector('.goog-te-menu2-item');
+            if (firstItem) firstItem.click();
             return;
         }
 
         // 翻譯成英文
         const items = innerDoc.getElementsByClassName('goog-te-menu2-item');
         for (let i = 0; i < items.length; i++) {
-            if (items[i].textContent.includes('English') || items[i].textContent.includes('英文')) {
+            const text = items[i].textContent;
+            if (text.includes('English') || text.includes('英文')) {
                 items[i].click();
                 return;
             }
