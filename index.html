@@ -79,17 +79,29 @@
 
         // --- Shared Components ---
 
-      const Header = () => {
+     const Header = () => {
             const navigate = useNavigate();
             const { pathname } = useLocation();
 
-            // 翻譯觸發邏輯：點擊時才加載 Google 翻譯引擎
+            // 翻譯觸發邏輯
             const handleTranslate = () => {
                 if (!document.getElementById('google_translate_script')) {
+                    // 在 body 最末端建立隱藏掛載點
                     const mount = document.createElement('div');
                     mount.id = 'google_translate_element';
                     mount.style.display = 'none';
                     document.body.appendChild(mount);
+
+                    // 注入 CSS 隱藏 Google 翻譯的工具列橫幅
+                    const style = document.createElement('style');
+                    style.innerHTML = `
+                        .goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon { display: none !important; }
+                        body { top: 0px !important; }
+                        .goog-tooltip { display: none !important; }
+                        .goog-tooltip:hover { display: none !important; }
+                        .goog-text-highlight { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+                    `;
+                    document.head.appendChild(style);
 
                     const addScript = document.createElement('script');
                     addScript.id = 'google_translate_script';
@@ -121,16 +133,16 @@
                 <header class="sticky top-0 z-50 w-full bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
                     <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
                         
-                        {/* 左側 Logo 區域 */}
+                        {/* 左側 Logo 區域：文字完整保留 */}
                         <div onClick={() => navigate('/')} class="flex items-center gap-3 cursor-pointer group">
                             <img src="works/logo.svg" alt="宇碩光" class="h-8 w-auto block" />
-                            <div class="flex flex-col">
-                                <span class="text-lg font-black tracking-tighter text-slate-900 dark:text-white leading-none">宇碩光</span>
+                            <div class="flex flex-col text-slate-900 dark:text-white">
+                                <span class="text-lg font-black tracking-tighter leading-none">宇碩光</span>
                                 <span class="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">Athene Tech</span>
                             </div>
                         </div>
 
-                        {/* 右側組合：選單與 EN 鈕一體化靠右 */}
+                        {/* 右側組合區域：NAV 整體向 EN 靠齊 */}
                         <div class="flex items-center gap-10">
                             <nav class="hidden md:flex items-center gap-10">
                                 <button onClick={() => navigate('/')} class={`text-sm font-bold tracking-widest transition-colors ${pathname === '/' ? 'text-primary' : 'text-slate-500 hover:text-primary'}`}>首頁</button>
@@ -139,6 +151,7 @@
                                 <button onClick={() => navigate('/contact')} class={`text-sm font-bold tracking-widest transition-colors ${pathname === '/contact' ? 'text-primary' : 'text-slate-500 hover:text-primary'}`}>聯絡我們</button>
                             </nav>
 
+                            {/* 分隔線與 EN 按鈕 */}
                             <div class="flex items-center border-l border-slate-200 dark:border-slate-700 pl-8">
                                 <button 
                                     onClick={handleTranslate}
@@ -152,7 +165,6 @@
                 </header>
             );
         };
-
         const Footer = () => (
             <footer class="bg-slate-50 dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-20 pb-10">
                 <div class="max-w-7xl mx-auto px-6 w-full">
