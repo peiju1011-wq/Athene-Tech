@@ -141,31 +141,36 @@
                         
                        <div className="flex md:hidden flex-col items-end space-y-1">
     {/* 第一排：漢堡選單鍵 */}
-<button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-900 dark:text-white">
+    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-900 dark:text-white">
         <span className="material-symbols-outlined text-3xl">
             {isMenuOpen ? 'close' : 'menu'}
         </span>
     </button>
     
-    {/* 第二排：中英按鈕 (齊右排在選單下方) */}
-    <div className="flex items-center space-x-2 text-xs font-bold bg-slate-100/80 dark:bg-slate-800/80 px-3 py-1.5 rounded-full shadow-sm">
-        <button onClick={() => window.doGTranslate('zh-TW')} className="hover:text-blue-600 transition-colors">中文</button>
+    {/* 第二排：中英按鈕 (齊右) */}
+    <div className="flex items-center space-x-2 text-xs font-bold bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
+        <button onClick={() => window.doGTranslate('zh-TW')} className="hover:text-blue-600">中文</button>
         <span className="text-slate-300">|</span>
-        <button onClick={() => window.doGTranslate('en')} className="hover:text-blue-600 transition-colors">EN</button>
+        <button onClick={() => window.doGTranslate('en')} className="hover:text-blue-600">EN</button>
     </div>
 </div>
                     </div>
 
                     {/* Mobile Menu */}
-                {isMenuOpen && (
-                <div className="md:hidden bg-white dark:bg-slate-900 border-t border-slate-100 animate-in slide-in-from-top duration-300">
-                    <div className="px-4 pt-2 pb-6 space-y-2">
-                        <a href="#products" onClick={() => setIsMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-lg">產品中心</a>
-                        <a href="#about" onClick={() => setIsMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-lg">關於我們</a>
-                        <a href="#contact" onClick={() => setIsMenuOpen(false)} className="block px-3 py-3 text-base font-medium text-slate-700 hover:bg-slate-50 rounded-lg">聯繫我們</a>
-                    </div>
-                </div>
-            )}
+                    {isMenuOpen && (
+                        <div class="md:hidden bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4">
+                            {navLinks.map(link => (
+                                <Link 
+                                    key={link.path}
+                                    to={link.path} 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    class={`text-base font-medium ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
                 </header>
             );
         };
