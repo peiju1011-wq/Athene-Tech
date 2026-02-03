@@ -127,12 +127,12 @@
                             <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
 <li className="flex items-center space-x-2 text-sm font-medium">
     <button 
-        onClick={() => window.translateLanguage('zh-TW')} 
+        onClick={() => window.doGTranslate('zh-TW')} 
         className="hover:text-blue-600 transition-colors"
     >中文</button>
     <span className="text-gray-400">|</span>
     <button 
-        onClick={() => window.translateLanguage('en')} 
+        onClick={() => window.doGTranslate('en')} 
         className="hover:text-blue-600 transition-colors"
     >EN</button>
 </li>
@@ -892,44 +892,46 @@ const ProjectsPage = () => {
 <div id="google_translate_element"></div>
 <div id="google_translate_element"></div>
 
+<div id="google_translate_element"></div>
+<div id="google_translate_element" style="display:none;"></div>
+
 <script type="text/javascript">
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
-            pageLanguage: 'zh-TW', 
-            includedLanguages: 'en,zh-TW',
+            pageLanguage: 'zh-TW',
+            // 使用 SIMPLE 版介面減少干擾
+            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
             autoDisplay: false 
         }, 'google_translate_element');
     }
 
-    window.translateLanguage = function(lang) {
-        const frame = document.querySelector('.goog-te-menu-frame');
-        if (!frame) return;
-        const innerDoc = frame.contentDocument || frame.contentWindow.document;
+    // 核心修復：透過 Cookie 切換語系，並強制隱藏頂部橫條
+    window.doGTranslate = function(lang) {
+        var langCode = (lang === 'zh-TW') ? 'zh-TW' : 'en';
+        var domain = window.location.hostname;
         
-        if (lang === 'zh-TW') {
-            // 修復中文鈕：嘗試點擊 Google 的恢復原文 (Restore)
-            const iframe = document.querySelector('.goog-te-banner-frame');
-            if (iframe) {
-                const shadowDoc = iframe.contentDocument || iframe.contentWindow.document;
-                const restoreBtn = shadowDoc.getElementById(':1.restore') || shadowDoc.querySelector('.goog-close-link');
-                if (restoreBtn) { restoreBtn.click(); return; }
-            }
-            // 備案：點擊選單中的第一個選項（通常是原文）
-            const firstItem = innerDoc.querySelector('.goog-te-menu2-item');
-            if (firstItem) firstItem.click();
-            return;
+        // 寫入 Google 翻譯必備的 Cookie
+        document.cookie = "googtrans=/zh-TW/" + langCode + "; path=/";
+        document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + domain + "; path=/";
+        
+        // 再次確保 Cookie 寫入成功（處理部分瀏覽器相容性）
+        if (domain.split('.').length > 2) {
+            var rootDomain = domain.substring(domain.lastIndexOf(".", domain.lastIndexOf(".") - 1) + 1);
+            document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + rootDomain + "; path=/";
         }
 
-        // 翻譯成英文
-        const items = innerDoc.getElementsByClassName('goog-te-menu2-item');
-        for (let i = 0; i < items.length; i++) {
-            const text = items[i].textContent;
-            if (text.includes('English') || text.includes('英文')) {
-                items[i].click();
-                return;
-            }
-        }
+        // 重新整理頁面，這樣就不會出現 Google 的橫條選單
+        window.location.reload();
     };
+
+    // 額外保險：強制用 CSS 移除可能出現的橫條殘影
+    var style = document.createElement('style');
+    style.innerHTML = `
+        .goog-te-banner-frame { display: none !important; }
+        body { top: 0px !important; }
+        .skiptranslate { display: none !important; }
+    `;
+    document.head.appendChild(style);
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </body>
