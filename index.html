@@ -161,7 +161,26 @@
         }
     }
 </style>
+<style>
+    /* 針對所有下拉選單進行清理 */
+    select {
+        /* 移除瀏覽器預設樣式 */
+        appearance: none !important;
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        
+        /* 關鍵：移除 Tailwind Forms 插件自動產生的背景箭頭 */
+        background-image: none !important; 
+        
+        /* 確保右側留有空間放您自己的 v */
+        padding-right: 30px !important;
+    }
 
+    /* 針對 IE/Edge 的特殊修正 */
+    select::-ms-expand {
+        display: none !important;
+    }
+</style>
 
 </head>
 <body>
