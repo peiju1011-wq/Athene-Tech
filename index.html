@@ -161,6 +161,8 @@
         }
     }
 </style>
+
+
 </head>
 <body>
     <div id="root"></div>
@@ -212,45 +214,45 @@
                               
                             </nav>
                             <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
-{/* 重點：將 ml-4 改為 ml-1 或 ml-0.5，讓整個組件向左貼近切線 */}
-{/* ml-1 讓組件靠近左側分隔線 */}
-<li className="flex items-center ml-1">
-    {/* 膠囊容器：微調 p-1 保持精緻 */}
-    <div className="relative flex items-center p-1 bg-white/10 border border-white/20 rounded-full backdrop-blur-md shadow-lg">
+
+
+{/* 移除原本的 Language 文字，並將 py-6 改為 py-2 減少上下留白 */}
+<div className="px-4 py-2 border-t border-white/10 mt-auto flex justify-center">
+    
+    {/* 手機版水平膠囊組件：p-[2px] 讓外框最窄，不會撐大導覽列 */}
+    <div className="relative flex items-center p-[2px] bg-white/5 border border-white/10 rounded-full backdrop-blur-md">
         
-        {/* 中文按鈕：text-sm 使其與「首頁」同大，px-4 保持寬度 */}
+        {/* 中文按鈕：py-1 讓按鈕變扁，不撐高導航欄 */}
         <button 
             onClick={() => window.doGTranslate('zh-TW')}
-            className={`relative px-4 py-1 rounded-full text-sm font-medium tracking-wide transition-all duration-300 flex items-center justify-center ${
+            className={`relative px-5 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
                 document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')
                 ? 'text-white' 
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400'
             }`}
         >
-            {/* 選中時：顯示藍色底 */}
             {(document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')) && (
-                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.5)] animate-pulse-slow"></div>
+                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.4)] animate-pulse-slow"></div>
             )}
             中文
         </button>
 
-        {/* 英文按鈕：text-sm 使其與「首頁」同大 */}
+        {/* 英文按鈕：py-1 讓按鈕變扁 */}
         <button 
             onClick={() => window.doGTranslate('en')}
-            className={`relative px-4 py-1 rounded-full text-sm font-medium tracking-wide transition-all duration-300 flex items-center justify-center ${
+            className={`relative px-5 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
                 document.cookie.includes('googtrans=/zh-TW/en') 
                 ? 'text-white' 
-                : 'text-slate-400 hover:text-white'
+                : 'text-slate-400'
             }`}
         >
-            {/* 選中時：顯示藍色底 */}
             {document.cookie.includes('googtrans=/zh-TW/en') && (
-                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.5)] animate-pulse-slow"></div>
+                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.4)] animate-pulse-slow"></div>
             )}
             EN
         </button>
     </div>
-</li>
+</div>
                             </div>
                         </div>
                         
