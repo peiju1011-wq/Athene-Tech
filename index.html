@@ -19,7 +19,9 @@
     body { top: 0px !important; position: static !important; }
     #google_translate_element { display: none; }
     .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
+    
 </style>
+
     <!-- React & Router Dependencies -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -56,6 +58,7 @@
             },
         }
     </script>
+    
 <style>
     /* 核心動畫定義 */
     @keyframes spin-ultra-fast {
@@ -66,7 +69,59 @@
         from { transform: rotate(360deg); }
         to { transform: rotate(0deg); }
     }
+    
+/* 語系按鈕呼吸感動畫 */
+ @keyframes pulse-slow {
+        0%, 100% { opacity: 0.9; transform: scale(1); }
+        50% { opacity: 1; transform: scale(1.02); }
+    }
+    .animate-pulse-slow {
+        animation: pulse-slow 3s ease-in-out infinite;
+    }
 
+    /* 確保在導航欄背景下文字清晰 */
+    .text-slate-400 {
+        color: #94a3b8 !important; /* 強制使用灰色，不隨透明度消失 */
+    }
+
+    /* 4. 觸發首頁圖示鈕旋轉 (電腦與手機) */
+    .group:hover .rotate-outer, 
+    .group:active .rotate-outer {
+        animation: spin-ultra-fast 0.8s linear infinite !important;
+    }
+    .group:hover .rotate-inner,
+    .group:active .rotate-inner {
+        animation: spin-reverse 4s linear infinite !important;
+    }
+    .group:hover .rotate-border,
+    .group:active .rotate-border {
+        animation: spin-ultra-fast 1.2s linear infinite !important;
+    }
+
+    /* 5. 觸發語系按鈕呼吸燈 */
+    .animate-pulse-slow {
+        animation: pulse-slow 3s ease-in-out infinite;
+    }
+
+    /* 6. 手機版優化：確保邊框亮度 */
+    @media (max-width: 768px) {
+        .rotate-outer { opacity: 0.8 !important; }
+        .rotate-border { opacity: 0.6 !important; }
+    }
+
+    /* 7. 隱藏 Google 翻譯原有介面 (保險起見再寫一次) */
+    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
+    body { top: 0px !important; position: static !important; }
+
+    /* 確保手機版邊框亮度 */
+    @media (max-width: 768px) {
+        .rotate-outer {
+            opacity: 0.8 !important; 
+        }
+        .rotate-border {
+            opacity: 0.6 !important;
+        }
+    }
     /* 滑鼠靠近 (電腦) 或 手指觸碰 (手機) 時觸發旋轉 */
     /* 在手機上，點擊按鈕時會觸發 :hover 狀態 */
     .group:hover .rotate-outer, 
@@ -95,6 +150,16 @@
     /* 原有 Google 翻譯隱藏樣式 */
     .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
     body { top: 0px !important; position: static !important; }
+</style>
+<style>
+    /* 只在電腦版 (螢幕寬度 > 768px) 將導覽字體變大並加粗 */
+    @media (min-width: 769px) {
+        nav a {
+            font-size: 16px !important;
+            font-weight: 600 !important; /* 加入這一行來加粗，建議用 500 或 600 */
+            letter-spacing: 0.5px; 
+        }
+    }
 </style>
 </head>
 <body>
@@ -147,16 +212,44 @@
                               
                             </nav>
                             <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
-<li className="flex items-center space-x-2 text-sm font-medium">
-    <button 
-        onClick={() => window.doGTranslate('zh-TW')} 
-        className="hover:text-blue-600 transition-colors"
-    >中文</button>
-    <span className="text-gray-400">|</span>
-    <button 
-        onClick={() => window.doGTranslate('en')} 
-        className="hover:text-blue-600 transition-colors"
-    >EN</button>
+{/* 重點：將 ml-4 改為 ml-1 或 ml-0.5，讓整個組件向左貼近切線 */}
+{/* ml-1 讓組件靠近左側分隔線 */}
+<li className="flex items-center ml-1">
+    {/* 膠囊容器：微調 p-1 保持精緻 */}
+    <div className="relative flex items-center p-1 bg-white/10 border border-white/20 rounded-full backdrop-blur-md shadow-lg">
+        
+        {/* 中文按鈕：text-sm 使其與「首頁」同大，px-4 保持寬度 */}
+        <button 
+            onClick={() => window.doGTranslate('zh-TW')}
+            className={`relative px-4 py-1 rounded-full text-sm font-medium tracking-wide transition-all duration-300 flex items-center justify-center ${
+                document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')
+                ? 'text-white' 
+                : 'text-slate-400 hover:text-white'
+            }`}
+        >
+            {/* 選中時：顯示藍色底 */}
+            {(document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')) && (
+                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.5)] animate-pulse-slow"></div>
+            )}
+            中文
+        </button>
+
+        {/* 英文按鈕：text-sm 使其與「首頁」同大 */}
+        <button 
+            onClick={() => window.doGTranslate('en')}
+            className={`relative px-4 py-1 rounded-full text-sm font-medium tracking-wide transition-all duration-300 flex items-center justify-center ${
+                document.cookie.includes('googtrans=/zh-TW/en') 
+                ? 'text-white' 
+                : 'text-slate-400 hover:text-white'
+            }`}
+        >
+            {/* 選中時：顯示藍色底 */}
+            {document.cookie.includes('googtrans=/zh-TW/en') && (
+                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.5)] animate-pulse-slow"></div>
+            )}
+            EN
+        </button>
+    </div>
 </li>
                             </div>
                         </div>
@@ -291,7 +384,7 @@
 
       <div class="relative flex items-center justify-center w-full h-full bg-slate-900 rounded-full">
         <span class="material-symbols-outlined text-3xl text-blue-100/80 group-hover:text-blue-100 font-light">
-           folder_open
+          folder_open
         </span>
       </div>
     </button>
