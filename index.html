@@ -162,23 +162,18 @@
     }
 </style>
 <style>
-    /* 針對所有下拉選單進行清理 */
-    select {
-        /* 移除瀏覽器預設樣式 */
-        appearance: none !important;
-        -webkit-appearance: none !important;
-        -moz-appearance: none !important;
-        
-        /* 關鍵：移除 Tailwind Forms 插件自動產生的背景箭頭 */
-        background-image: none !important; 
-        
-        /* 確保右側留有空間放您自己的 v */
-        padding-right: 30px !important;
+    /* Logo 平時的過渡設定 */
+    .logo-glow-effect {
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0));
     }
 
-    /* 針對 IE/Edge 的特殊修正 */
-    select::-ms-expand {
-        display: none !important;
+    /* 當滑鼠移入 Logo 或文字時觸發發光 */
+    .group:hover .logo-glow-effect {
+        /* 第一層：深藍色光暈 (核心) */
+        /* 第二層：亮黃色散光 (外圍) */
+        filter: drop-shadow(0 0 8px #ffffff) 
+                drop-shadow(0 0 12px #81ddff);
     }
 </style>
 
@@ -210,8 +205,22 @@
                         <Link to="/" class="flex items-center gap-3">
                             <div class="text-primary">
                                 <div class="text-primary">
-    <img src="works/logo.svg" alt="宇碩光" class="h-8 w-auto block" />
+  {/* Logo 容器：加上 group 類名，讓滑鼠移到文字時 Logo 也會發光 */}
+{/* Logo 容器：加上 group 觸發 Hover，加上 z-50 確保點擊不被遮擋 */}
+<div 
+    onClick={() => navigate('/')} 
+    className="flex items-center space-x-3 cursor-pointer group relative z-50"
+>
+    <div className="relative">
+        <img 
+            src="works/logo.svg" 
+            alt="宇碩光" 
+            className="h-8 w-auto block transition-all duration-500 logo-glow-effect group-hover:scale-105" 
+        />
     </div>
+</div>
+    
+</div>
                             </div>
                             <div class="flex flex-col leading-none">
                                 <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">宇碩光</h1>
@@ -789,13 +798,13 @@ const ProjectsPage = () => {
         // 可依此格式新增其他專案...
     ];
 
-    // --- 自動輪播邏輯 (10秒) ---
+    // --- 自動輪播邏輯 (秒) ---
     useEffect(() => {
         let timer;
         if (selectedProject && selectedProject.images) {
             timer = setInterval(() => {
                 setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
-            }, 10000); // 10000 毫秒 = 10 秒
+            }, 3500); 
         }
         return () => clearInterval(timer);
     }, [selectedProject]);
