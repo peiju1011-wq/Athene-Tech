@@ -57,23 +57,42 @@
         }
     </script>
     
-    <style type="text/tailwindcss">
-        @layer base {
-            body {
-                @apply font-body bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden transition-colors duration-300;
+<style type="text/tailwindcss">
+    @layer base {
+        body {
+            @apply font-body bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden transition-colors duration-300;
+        }
+    }
+
+    /* 新增的手機版按鈕排版優化 */
+    @layer components {
+        .button-container {
+            @apply flex flex-row justify-center gap-4;
+        }
+
+        /* 針對螢幕寬度 768px 以下 (md 以下) 的調整 */
+        @media (max-width: 768px) {
+            .button-container {
+                @apply flex-col items-center gap-3;
+            }
+            .button-container a, 
+            .button-container button {
+                @apply w-4/5 py-3 whitespace-nowrap text-center;
             }
         }
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-    </style>
+    }
+
+    .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+</style>
 </head>
 <body>
     <div id="root"></div>
