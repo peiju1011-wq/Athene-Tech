@@ -74,36 +74,38 @@
             scrollbar-width: none;
         }
 
-/* 容器樣式：確保左右有邊距，不貼死螢幕 */
+/* 1. 容器：手機版改為垂直堆疊 (flex-col) */
 .button-container {
     display: flex;
+    flex-direction: row;     /* 電腦版預設橫排 */
     justify-content: center;
-    gap: 12px;           /* 兩個按鈕之間的間距 */
-    padding: 0 16px;     /* 容器左右外距，與電腦版邊距感一致 */
+    gap: 16px;
+    padding: 0 20px;
     width: 100%;
 }
 
-/* 按鈕樣式：核心在於不換行與自動寬度 */
+/* 2. 按鈕：強制文字不換行 */
 .button-selector {
-    white-space: nowrap;  /* 強制文字不分兩行 */
-    flex: 0 1 auto;       /* 讓按鈕根據文字內容縮放 */
+    white-space: nowrap;      /* 核心：文字不分兩行 */
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px 16px;   /* 稍微減少左右 Padding，避免擠壓 */
-    font-size: 15px;      /* 手機版字體稍微縮小一点點 (電腦版通常 16px) */
-    border-radius: 8px;
+    padding: 12px 24px;
+    min-width: fit-content;   /* 寬度隨文字長度自動撐開 */
 }
 
-/* 針對極窄螢幕 (如 iPhone SE) 的微調 */
-@media (max-width: 380px) {
+/* 3. 針對手機版 (螢幕寬度 768px 以下) 的修正 */
+@media (max-width: 768px) {
     .button-container {
-        gap: 8px;         /* 縮小按鈕間距 */
-        padding: 0 10px;
+        flex-direction: column; /* 手機版強制改為上下排列，解決破版問題 */
+        align-items: center;    /* 置中 */
+        gap: 12px;              /* 兩個按鈕之間的上下距離 */
     }
+
     .button-selector {
-        font-size: 14px;  /* 字體再縮小一點，確保不換行 */
-        padding: 8px 12px;
+        width: 85%;             /* 讓按鈕在手機上佔據適中寬度 */
+        max-width: 320px;       /* 限制最大寬度，避免在大手機上過長 */
+        font-size: 15px;        /* 微調字體大小適配螢幕 */
     }
 }
     </style>
