@@ -56,8 +56,7 @@
             },
         }
     </script>
-    
-<style type="text/tailwindcss">
+    <style type="text/tailwindcss">
         @layer base {
             body {
                 @apply font-body bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased overflow-x-hidden transition-colors duration-300;
@@ -285,18 +284,14 @@
                                     <h2 class="text-slate-100 text-lg md:text-2xl font-light max-w-3xl mx-auto leading-relaxed tracking-wide opacity-90">
                                         宇碩光專注於尖端光電技術研發，為次世代科技提供精準的工業應用與光學合理解決方案。
                                     </h2>
-<div class="mt-10 flex flex-col items-center justify-center gap-4 px-6 md:flex-row">
-    
-    <a href="#solutions" 
-       class="w-full max-w-[280px] md:w-fit whitespace-nowrap rounded-xl bg-primary px-8 py-4 text-center font-bold text-white shadow-lg transition-all hover:bg-primary/90">
-        探索光學方案
-    </a>
-
-    <a href="#about" 
-       class="w-full max-w-[280px] md:w-fit whitespace-nowrap rounded-xl border border-white/20 bg-white/10 px-8 py-4 text-center font-bold text-white backdrop-blur-sm transition-all hover:bg-white/20">
-        了解更多
-    </a>
-</div>
+                                    <div class="pt-8 flex justify-center gap-4">
+                                        <button onClick={() => navigate('/projects')} class="cursor-pointer inline-flex items-center justify-center rounded-lg h-14 px-10 bg-primary hover:bg-blue-600 text-white text-base font-bold tracking-widest transition-all shadow-xl hover:shadow-primary/30">
+                                            探索光學方案
+                                        </button>
+                                        <button onClick={() => navigate('/contact')} class="cursor-pointer inline-flex items-center justify-center rounded-lg h-14 px-10 border border-white/30 bg-white/10 hover:bg-white/20 text-white text-base font-bold tracking-widest transition-all backdrop-blur-sm">
+                                            了解更多
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -985,5 +980,3 @@ const ProjectsPage = () => {
     document.head.appendChild(style);
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-</body>
-</html>
