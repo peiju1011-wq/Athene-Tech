@@ -5,36 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>RFMF SERIES 產品搜尋系統</title>
 <style>
-  .search-container { max-width: 100% !important; padding: 10px !important; }
-  :root {
-    --primary-red: #2972b1;
-    --navy-blue: #2c3e50;
-    --bg-gray: #f8f9fa;
-    --border-color: #dee2e6;
-  }
+  /* --- 修正後的搜尋容器：透明背景、無框線、無陰影 --- */
+:root {
+  --primary-red: #2972b1;
+  --navy-blue: #2c3e50;
+  --bg-gray: transparent; /* 核心修改：設為透明以透出 code.html 的背景色 */
+  --border-color: transparent; /* 核心修改：移除邊框顏色 */
+}
 
-  body { font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; background-color: var(--bg-gray); margin: 0; padding: 0; }
+body { 
+  font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
+  background-color: transparent; /* 核心修改：設為透明 */
+  margin: 0; 
+  padding: 0; 
+}
 
-  /* --- 1. 固定標頭 --- */
-  .brand-header {
-    position: sticky; top: 0; z-index: 1100;
-    background: white; padding: 12px 25px;
-    display: flex; align-items: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  }
-  .logo-flex-wrapper { display: flex; align-items: center; gap: 12px; padding: 6px 18px; border: 1.5px solid #e0e0e0; border-radius: 50px; background-color: #fcfcfc; }
-  .brand-logo { height: 32px; width: auto; flex-shrink: 0; }
-  .brand-name { font-size: 1.1rem; font-weight: bold; color: var(--navy-blue); white-space: nowrap; }
+/* --- 1. 固定標頭 (嵌入時通常隱藏) --- */
+.brand-header {
+  display: none !important; /* 嵌入時強制隱藏原本的 Logo 欄位 */
+}
 
-  /* --- 2. 搜尋列 --- */
- .search-container {
+/* --- 2. 搜尋列：改善為無膠囊框感 --- */
+.search-container {
   position: sticky; 
   top: 0; 
-  z-index: 9999; /* 提高層級，確保它在最前面 */
-  background: white; /* 確保背景是不透明的 */
-  padding: 15px 0; 
-  margin-bottom: 10px;
-  border-bottom: 1px solid #eee;
+  z-index: 9999;
+  background: transparent !important; /* 移除白底 */
+  padding: 10px 0; 
+  margin-bottom: 5px;
+  border-bottom: none !important; /* 移除底部橫線 */
+  max-width: 100% !important;
+  box-shadow: none !important; /* 移除陰影 */
+}
+
+/* 如果搜尋輸入框本身有太重的陰影或背景，也可以在此微調 */
+#globalSearch {
+  background-color: white; /* 搜尋框內保持白色方便閱讀 */
+  border: 1px solid #e2e8f0; /* 使用更淡的邊框 */
+  border-radius: 50px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* 極淡陰影 */
 }
   .search-box { max-width: 1300px; margin: 0 auto; padding: 0 20px; position: relative; }
   .search-box input {
@@ -548,3 +557,4 @@
 
 </body>
 </html>
+
