@@ -60,92 +60,50 @@
     </script>
     
 <style>
-    /* 核心動畫定義 */
-    @keyframes spin-ultra-fast {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-    @keyframes spin-reverse {
-        from { transform: rotate(360deg); }
-        to { transform: rotate(0deg); }
-    }
-    
-/* 語系按鈕呼吸感動畫 */
- @keyframes pulse-slow {
-        0%, 100% { opacity: 0.9; transform: scale(1); }
-        50% { opacity: 1; transform: scale(1.02); }
-    }
-    .animate-pulse-slow {
-        animation: pulse-slow 3s ease-in-out infinite;
-    }
 
-    /* 確保在導航欄背景下文字清晰 */
-    .text-slate-400 {
-        color: #94a3b8 !important; /* 強制使用灰色，不隨透明度消失 */
-    }
+/* 語系按鈕呼吸感 */
+@keyframes pulse-slow {
+    0%, 100% { opacity: 0.9; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+}
+.animate-pulse-slow {
+    animation: pulse-slow 3s ease-in-out infinite;
+}
 
-    /* 4. 觸發首頁圖示鈕旋轉 (電腦與手機) */
-    .group:hover .rotate-outer, 
-    .group:active .rotate-outer {
-        animation: spin-ultra-fast 0.8s linear infinite !important;
-    }
-    .group:hover .rotate-inner,
-    .group:active .rotate-inner {
-        animation: spin-reverse 4s linear infinite !important;
-    }
-    .group:hover .rotate-border,
-    .group:active .rotate-border {
-        animation: spin-ultra-fast 1.2s linear infinite !important;
-    }
+/* 高級感 5 秒旋轉動畫定義 */
+@keyframes rotate-premium-5s {
+    0% { transform: rotate(0deg); }
+    /* 加入一點點回彈感或更細緻的補間 */
+    100% { transform: rotate(360deg); }
+}
 
-    /* 5. 觸發語系按鈕呼吸燈 */
-    .animate-pulse-slow {
-        animation: pulse-slow 3s ease-in-out infinite;
-    }
+@keyframes rotate-reverse-premium-5s {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
 
-    /* 6. 手機版優化：確保邊框亮度 */
-    @media (max-width: 768px) {
-        .rotate-outer { opacity: 0.8 !important; }
-        .rotate-border { opacity: 0.6 !important; }
-    }
+/* 觸發效果：重點在於貝茲曲線 (0.2, 0.8, 0.2, 1) */
+.group:hover .rotate-outer, 
+.group:active .rotate-outer {
+    animation: rotate-premium-5s 5s cubic-bezier(0.2, 0.8, 0.2, 1) 1 forwards !important;
+}
 
-    /* 7. 隱藏 Google 翻譯原有介面 (保險起見再寫一次) */
-    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-    body { top: 0px !important; position: static !important; }
+.group:hover .rotate-inner,
+.group:active .rotate-inner {
+    animation: rotate-reverse-premium-5s 5s cubic-bezier(0.2, 0.8, 0.2, 1) 1 forwards !important;
+}
 
-    /* 確保手機版邊框亮度 */
-    @media (max-width: 768px) {
-        .rotate-outer {
-            opacity: 0.8 !important; 
-        }
-        .rotate-border {
-            opacity: 0.6 !important;
-        }
-    }
-    /* 滑鼠靠近 (電腦) 或 手指觸碰 (手機) 時觸發旋轉 */
-    /* 在手機上，點擊按鈕時會觸發 :hover 狀態 */
-    .group:hover .rotate-outer, 
-    .group:active .rotate-outer {
-        animation: spin-ultra-fast 0.8s linear infinite !important;
-    }
-    .group:hover .rotate-inner,
-    .group:active .rotate-inner {
-        animation: spin-reverse 4s linear infinite !important;
-    }
-    .group:hover .rotate-border,
-    .group:active .rotate-border {
-        animation: spin-ultra-fast 1.2s linear infinite !important;
-    }
+.group:hover .rotate-border,
+.group:active .rotate-border {
+    animation: rotate-premium-5s 5s cubic-bezier(0.2, 0.8, 0.2, 1) 1 forwards !important;
+}
 
-    /* 確保手機版邊框亮度 */
-    @media (max-width: 768px) {
-        .rotate-outer {
-            opacity: 0.8 !important; /* 手機版預設微亮，避免完全看不見 */
-        }
-        .rotate-border {
-            opacity: 0.6 !important;
-        }
-    }
+/* 確保手機能觸發：點擊時也會有 5 秒動畫 */
+@media (max-width: 768px) {
+    .rotate-outer { opacity: 0.8 !important; }
+    .rotate-border { opacity: 0.6 !important; }
+}
+
 
     /* 原有 Google 翻譯隱藏樣式 */
     .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
