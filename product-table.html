@@ -1,984 +1,563 @@
 <!DOCTYPE html>
-<html class="light" lang="zh-TW">
+<html lang="zh-TW">
 <head>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>宇碩光 | Athene Technology Corp.</title>
-    
-    <!-- Fonts & Icons -->
-    <link rel="preconnect" href="https://fonts.googleapis.com"/>
-    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>RFMF SERIES 產品搜尋系統</title>
 <style>
-    /* 隱藏 Google 翻譯 UI */
-    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-    body { top: 0px !important; position: static !important; }
-    #google_translate_element { display: none; }
-    .goog-text-highlight { background-color: transparent !important; box-shadow: none !important; }
-    
+  /* --- 修正後的搜尋容器：透明背景、無框線、無陰影 --- */
+:root {
+  --primary-red: #2972b1;
+  --navy-blue: #2c3e50;
+  --bg-gray: transparent; /* 核心修改：設為透明以透出 code.html 的背景色 */
+  --border-color: transparent; /* 核心修改：移除邊框顏色 */
+}
+
+body { 
+  font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
+  background-color: transparent; /* 核心修改：設為透明 */
+  margin: 0; 
+  padding: 0; 
+}
+
+/* --- 1. 固定標頭 (嵌入時通常隱藏) --- */
+.brand-header {
+  display: none !important; /* 嵌入時強制隱藏原本的 Logo 欄位 */
+}
+
+/* --- 2. 搜尋列：改善為無膠囊框感 --- */
+.search-container {
+  position: sticky; 
+  top: 0; 
+  z-index: 9999;
+  background: transparent !important; /* 移除白底 */
+  padding: 10px 0; 
+  margin-bottom: 5px;
+  border-bottom: none !important; /* 移除底部橫線 */
+  max-width: 100% !important;
+  box-shadow: none !important; /* 移除陰影 */
+}
+
+/* 如果搜尋輸入框本身有太重的陰影或背景，也可以在此微調 */
+#globalSearch {
+  /*background-color: white;  搜尋框內保持白色方便閱讀 */
+  border: 1px solid #e2e8f0; /* 使用更淡的邊框 */
+  border-radius: 50px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* 極淡陰影 */
+}
+  .search-box { max-width: 1300px; margin: 0 auto; padding: 0 20px; position: relative; }
+  .search-box input {
+    width: 100%; padding: 12px 25px 12px 55px;
+    background: white; border: 1.5px solid #ddd; border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 16px; outline: none; transition: 0.3s;
+  }
+  .search-box input:focus { border-color: var(--primary-red); box-shadow: 0 4px 15px rgba(41,114,177,0.2); }
+  .search-icon { position: absolute; left: 40px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; fill: #888; z-index: 2; pointer-events: none; }
+
+  /* --- 3. 產品列表編排 --- */
+  .container { max-width: 1300px; margin: 0 auto; padding: 0 10px; }
+.hero-banner {
+  display: none; /* 直接隱藏，因為官網左側已經有產品圖了 */
+}
+  .hero-banner h1 { 
+    font-size: 2.5rem; 
+    margin: 0 0 5px 0; /* 縮減底部間距，讓兩行更緊湊 */
+    line-height: 1.1; 
+  }
+  .hero-banner p { 
+    font-size: 1rem; 
+    opacity: 0.9; 
+    margin: 0; 
+    letter-spacing: 1px; /* 增加英文字母間距，提升質感 */
+  }
+
+  .product-list-wrapper { background: white; border-radius: 8px; overflow: hidden; margin-bottom: 50px; }
+  .product-row { display: flex; gap: 30px; padding: 30px; border-bottom: 1px solid #eee; }
+  .product-images { flex: 0 0 450px; display: flex; gap: 15px; }
+  .img-box { flex: 1; text-align: center; }
+  .img-box img { width: 100%; border-radius: 8px; background: #eee; display: block; }
+  .img-label { font-size: 0.8rem; color: #777; margin-top: 10px; }
+
+  .product-data { flex: 1; min-width: 0; }
+  .table-container { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.95rem; min-width: 400px; }
+  th { background-color: #f8f9fa; text-align: left; padding: 12px; border-bottom: 2px solid var(--border-color); }
+  td { padding: 12px; border-bottom: 1px solid var(--border-color); }
+
+  .no-results { display: none; text-align: center; padding: 60px; color: #999; }
+
+  @media (max-width: 1100px) {
+    .product-row { flex-direction: column; }
+    .product-images { flex: none; width: 100%; }
+    .brand-name { font-size: 1rem; }
+  }
 </style>
-
-    <!-- React & Router Dependencies -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/history@5/umd/history.development.js"></script>
-    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.development.js"></script>
-    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.development.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#2b8cee",
-                        "primary-dark": "#1a6bb5",
-                        "background-light": "#f6f7f8",
-                        "background-dark": "#101922",
-                        "surface-light": "#ffffff",
-                        "surface-dark": "#1c2530",
-                        "text-main": "#0d141b",
-                        "text-main-dark": "#e2e8f0",
-                        "text-sub": "#4c739a",
-                        "text-sub-dark": "#94a3b8",
-                        "border-light": "#e7edf3",
-                        "border-dark": "#334155",
-                    },
-                    fontFamily: {
-                        "display": ["Space Grotesk", "Noto Sans TC", "sans-serif"],
-                        "body": ["Noto Sans TC", "sans-serif"],
-                    },
-                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
-                },
-            },
-        }
-    </script>
-    
-<style>
-
-/* 高級感彈跳動畫：完全不使用 scale，保護線條粗細 */
-@keyframes high-end-jump {
-    0% { transform: translateY(0); }
-    15% { transform: translateY(-10px); } /* 快速跳起 */
-    30% { transform: translateY(0); }     /* 落下 */
-    45% { transform: translateY(-3px); }  /* 第一次微小回彈 */
-    60% { transform: translateY(0); }
-    75% { transform: translateY(-1px); }  /* 第二次極微小回彈（心跳感） */
-    100% { transform: translateY(0); }
-}
-
-/* 當滑鼠移入容器時，觸發內部元件跳動 */
-.group:hover .jump-target {
-    /* 1.2秒完成一次完整律動，設定 infinite 可持續跳動，若只要跳一下請改 1 */
-    animation: high-end-jump 1.2s cubic-bezier(0.36, 0, 0.66, -0.56) infinite;
-}
-
-/* 為了更有質感，我們可以讓邊框跟圖標跳動的頻率有一點點點視差（Delay） */
-.group:hover .rotate-border {
-    animation-delay: 0s;
-}
-.group:hover span.jump-target {
-    animation-delay: 0.05s; /* 圖標比邊框晚 0.05 秒跳，更有彈性感覺 */
-}
-
-/* 移除原本可能干擾的旋轉動畫 */
-.rotate-border {
-    animation: none !important;
-}
-
-
-    /* 原有 Google 翻譯隱藏樣式 */
-    .goog-te-banner-frame.skiptranslate, [id^=":1.container"], #goog-gt-tt, .goog-te-balloon-frame { display: none !important; }
-    body { top: 0px !important; position: static !important; }
-</style>
-<style>
-    /* 只在電腦版 (螢幕寬度 > 768px) 將導覽字體變大並加粗 */
-    @media (min-width: 769px) {
-        nav a {
-            font-size: 16px !important;
-            font-weight: 600 !important; /* 加入這一行來加粗，建議用 500 或 600 */
-            letter-spacing: 0.5px; 
-        }
-    }
-</style>
-<style>
-    /* 初始狀態：Logo 保持乾淨 */
-    .logo-glow-effect {
-        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1); /* 使用更平滑的貝茲曲線 */
-        filter: drop-shadow(0 0 0px rgba(37, 99, 235, 0));
-        will-change: filter, transform;
-    }
-
-    /* 滑鼠移入：多層次清透發光 */
-    .group:hover .logo-glow-effect {
-        /* 第一層：最靠近 Logo 的亮藍色核心 (銳利)
-           第二層：外圍淡淡的科技藍暈染 (擴散)
-           額外加入 brightness 提升 Logo 本身的亮度，看起來更像在發光 
-        */
-        filter: 
-            brightness(1.1)
-            drop-shadow(0 0 4px rgba(37, 99, 235, 0.9)) 
-            drop-shadow(0 0 12px rgba(37, 99, 235, 0.3));
-        
-        transform: scale(1.03) translateY(-1px); /* 微微上浮增加動態感 */
-    }
-
-    /* 針對文字同步微調：讓文字也有一點點點發光的感覺 */
-    .group:hover .font-bold {
-        text-shadow: 0 0 8px rgba(37, 99, 235, 0.2);
-        transition: all 0.4s ease;
-    }
-</style>
-
 </head>
 <body>
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useState, useEffect } = React;
-        const { createRoot } = ReactDOM;
-        const { MemoryRouter, Routes, Route, Link, useNavigate, useLocation } = ReactRouterDOM;
 
-        // --- Shared Components ---
 
-        const Header = () => {
-            const [isMenuOpen, setIsMenuOpen] = useState(false);
-            const location = useLocation();
-            
-            const navLinks = [
-{ name: '首頁', path: '/' },
-    { name: '產品介紹', path: '/products' },
-    { name: '設計案例', path: '/projects' }, // 新增這行
-    { name: '聯絡我們', path: '/contact' }
-            ];
-
-            return (
-                <header class="sticky top-0 z-50 border-b border-slate-200 dark:border-slate-800 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-md">
-                    <div class="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto w-full">
-                        <Link to="/" class="flex items-center gap-3">
-                            <div class="text-primary">
-                                <div class="text-primary">
-
-{/* Logo 容器：加上 group 觸發 Hover，加上 z-50 確保點擊不被遮擋 */}
-<div 
-    onClick={() => navigate('/')} 
-    className="flex items-center space-x-3 cursor-pointer group relative z-50"
->
-    <div className="relative">
-        <img 
-            src="works/logo.svg" 
-            alt="宇碩光" 
-            className="h-8 w-auto block transition-all duration-500 logo-glow-effect group-hover:scale-105" 
-        />
+<div class="search-container">
+  <div class="search-box">
+    <div class="search-wrapper">
+      <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input type="text" id="globalSearch" placeholder="搜尋型號或尺寸 / Search Model or Size..." onkeyup="filterProducts()">
     </div>
-</div>
-    
-</div>
-                            </div>
-                            <div class="flex flex-col leading-none">
-                                <h1 class="text-xl font-bold tracking-tight text-slate-900 dark:text-white">宇碩光</h1>
-                                <span class="text-[10px] uppercase tracking-widest text-slate-500 dark:text-slate-400 font-medium">Athene Technology</span>
-                            </div>
-                        </Link>
-                        
-                        <div class="hidden md:flex flex-1 justify-end gap-10 items-center">
-                            <nav class="flex gap-8">
-                                {navLinks.map(link => (
-                                    <Link 
-                                        key={link.path}
-                                        to={link.path} 
-                                        class={`text-sm font-medium hover:text-primary transition-colors ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
-                                    >
-                                        {link.name}
-                                    </Link>
-                                ))}
-                              
-                            </nav>
-                            <div class="flex items-center border-l border-slate-200 dark:border-slate-800 ml-2 pl-8">
-
-
-{/* 移除原本的 Language 文字，並將 py-6 改為 py-2 減少上下留白 */}
-<div className="px-4 py-2 border-t border-white/10 mt-auto flex justify-center">
-    
-    {/* 手機版水平膠囊組件：p-[2px] 讓外框最窄，不會撐大導覽列 */}
-    <div className="relative flex items-center p-[2px] bg-white/5 border border-white/10 rounded-full backdrop-blur-md">
-        
-        {/* 中文按鈕：py-1 讓按鈕變扁，不撐高導航欄 */}
-        <button 
-            onClick={() => window.doGTranslate('zh-TW')}
-            className={`relative px-5 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
-                document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')
-                ? 'text-white' 
-                : 'text-slate-400'
-            }`}
-        >
-            {(document.cookie.includes('googtrans=/zh-TW/zh-TW') || !document.cookie.includes('googtrans')) && (
-                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.4)] animate-pulse-slow"></div>
-            )}
-            中文
-        </button>
-
-        {/* 英文按鈕：py-1 讓按鈕變扁 */}
-        <button 
-            onClick={() => window.doGTranslate('en')}
-            className={`relative px-5 py-1 rounded-full text-sm font-medium transition-all duration-300 ${
-                document.cookie.includes('googtrans=/zh-TW/en') 
-                ? 'text-white' 
-                : 'text-slate-400'
-            }`}
-        >
-            {document.cookie.includes('googtrans=/zh-TW/en') && (
-                <div className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-[0_0_10px_rgba(37,99,235,0.4)] animate-pulse-slow"></div>
-            )}
-            EN
-        </button>
-    </div>
-</div>
-                            </div>
-                        </div>
-                        
-                       <div className="flex md:hidden flex-col items-end space-y-1">
-    {/* 第一排：漢堡選單鍵 */}
-    <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-slate-900 dark:text-white">
-        <span className="material-symbols-outlined text-3xl">
-            {isMenuOpen ? 'close' : 'menu'}
-        </span>
-    </button>
-    
-    {/* 第二排：中英按鈕 (齊右) */}
-    <div className="flex items-center space-x-2 text-xs font-bold bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-full">
-        <button onClick={() => window.doGTranslate('zh-TW')} className="hover:text-blue-600">中文</button>
-        <span className="text-slate-300">|</span>
-        <button onClick={() => window.doGTranslate('en')} className="hover:text-blue-600">EN</button>
-    </div>
-</div>
-                    </div>
-
-                    {/* Mobile Menu */}
-                    {isMenuOpen && (
-                        <div class="md:hidden bg-background-light dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 p-6 flex flex-col gap-4">
-                            {navLinks.map(link => (
-                                <Link 
-                                    key={link.path}
-                                    to={link.path} 
-                                    onClick={() => setIsMenuOpen(false)}
-                                    class={`text-base font-medium ${location.pathname === link.path ? 'text-primary' : 'text-slate-700 dark:text-slate-300'}`}
-                                >
-                                    {link.name}
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                </header>
-            );
-        };
-
-        const Footer = () => (
-            <footer class="bg-slate-50 dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pt-20 pb-10">
-                <div class="max-w-7xl mx-auto px-6 w-full">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-16">
-                        <div class="col-span-1 md:col-span-1 flex flex-col gap-6">
-                            <div class="flex items-center gap-3 text-slate-900 dark:text-white">
-                              <div class="flex items-center">
-    <img src="works/logo.svg" alt="宇碩光" class="h-10 w-auto" />
-</div>
-                                <div class="flex flex-col leading-tight">
-                                    <span class="font-bold text-xl">宇碩光</span>
-                                    <span class="text-[9px] uppercase tracking-widest text-slate-400">Athene Tech</span>
-                                </div>
-                            </div>
-                            <p class="text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                                開創光學與光電技術的未來，致力於建構更清晰、更精準的世界。
-                            </p>
-                        </div>
-                        <div class="flex flex-col gap-4">
-                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">公司資訊</h5>
-                            <Link class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" to="/">關於我們</Link>
-                            <Link 
-    to="/contact" 
-    className="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors"
->
-    加入我們
-</Link>
-                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">最新動態</a>
-                        </div>
-                        <div class="flex flex-col gap-4">
-                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">解決方案</h5>
-                            <Link class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" to="/products">精密光學</Link>
-                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">雷射整合</a>
-                            <a class="text-sm text-slate-600 dark:text-slate-400 hover:text-primary transition-colors" href="#">影像感測</a>
-                        </div>
-                        <div class="flex flex-col gap-4">
-                            <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">聯絡我們</h5>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">joey@athene-tech.com</p>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">+886 2 8521 8383</p>
-                            <div class="flex gap-4 mt-2">
-                                <a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-xl">public</span></a>
-                                <Link 
-    to="/contact" 
-    className="text-slate-400 hover:text-primary transition-colors"
->
-    <span className="material-symbols-outlined text-xl">mail</span>
-</Link>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <p class="text-xs text-slate-400 font-light tracking-wide">© 2024 宇碩光 Athene Technology Corp. 版權所有.</p>
-                        <div class="flex gap-8">
-                            <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">隱私政策</a>
-                            <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">使用條款</a>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-        );
-
-        // --- Page Components ---
-
-        const HomePage = () => {
-            const navigate = useNavigate();
-            return (
-                <main class="flex-grow">
-                    <section class="relative w-full">
-                        <div class="@container">
-                            <div class="flex min-h-[700px] flex-col gap-8 bg-cover bg-center bg-no-repeat items-center justify-center p-8 relative" style={{backgroundImage: 'linear-gradient(rgba(16, 25, 34, 0.5) 0%, rgba(16, 25, 34, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw")'}}>
-                                <div class="max-w-4xl flex flex-col gap-6 text-center z-10">
-                                    <h1 class="text-white text-5xl md:text-8xl font-bold leading-tight tracking-tight">光學技術的領航者</h1>
-                                    <h2 class="text-slate-100 text-lg md:text-2xl font-light max-w-3xl mx-auto leading-relaxed tracking-wide opacity-90">
-                                        宇碩光專注於尖端光電技術研發，為次世代科技提供精準的工業應用與光學合理解決方案。
-                                    </h2>
-
-<div class="flex items-center justify-center gap-8 md:gap-12 pt-10">
-  
-  {/* 按鈕一：作品集 (folder_open) */}
-  <div class="relative group">
-    {/* 背景微光暈 */}
-    <div class="absolute inset-0 rounded-full bg-blue-500/10 scale-125 blur-xl group-hover:bg-blue-400/30 transition-all duration-700"></div>
-    
-    <button 
-      onClick={() => navigate('/projects')}
-      className="group relative cursor-pointer flex items-center justify-center w-20 h-20 rounded-full border-2 border-white/10 text-white transition-all duration-500 overflow-visible bg-transparent"
-    >
-      {/* 統一的極細流光弧線 */}
-      <div className="jump-target absolute inset-[-4px] rounded-full border-[1.5px] border-transparent border-t-white/80 border-l-white/20 opacity-0 group-hover:opacity-100 transition-all duration-700 rotate-[45deg] group-hover:rotate-[405deg]"></div>
-      
-      {/* 圖標層 */}
-      <div className="jump-target relative z-10">
-        <span className="material-symbols-outlined text-3xl font-light text-white/60 group-hover:text-white transition-colors duration-300">
-          folder_open
-        </span>
-      </div>
-
-      {/* 內圈背景微光 */}
-      <div className="absolute inset-0 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    </button>
   </div>
-
-  {/* 按鈕二：聯絡我們 (email) */}
-  <div class="relative group">
-    {/* 背景微光暈 (與左邊保持對稱) */}
-    <div class="absolute inset-0 rounded-full bg-blue-500/10 scale-125 blur-xl group-hover:bg-blue-400/30 transition-all duration-700"></div>
-    
-    <button 
-      onClick={() => navigate('/contact')}
-      className="group relative cursor-pointer flex items-center justify-center w-20 h-20 rounded-full border-2 border-white/10 text-white transition-all duration-500 overflow-visible bg-transparent"
-    >
-      {/* 統一的極細流光弧線 */}
-      <div className="jump-target absolute inset-[-4px] rounded-full border-[1.5px] border-transparent border-t-white/80 border-l-white/20 opacity-0 group-hover:opacity-100 transition-all duration-700 rotate-[45deg] group-hover:rotate-[405deg]"></div>
-      
-      {/* 圖標層 */}
-      <div className="jump-target relative z-10">
-        <span className="material-symbols-outlined text-3xl font-light text-white/60 group-hover:text-white transition-colors duration-300">
-          email
-        </span>
-      </div>
-
-      {/* 內圈背景微光 */}
-      <div className="absolute inset-0 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    </button>
-  </div>
-
 </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
 
-                    <section class="py-24 px-4 md:px-8 bg-background-light dark:bg-background-dark">
-                        <div class="max-w-7xl mx-auto w-full">
-                            <div class="flex flex-col lg:flex-row gap-16 items-center">
-                                <div class="w-full lg:w-1/2">
-                                    <div class="w-full aspect-[4/3] bg-cover bg-center rounded-xl shadow-2xl relative overflow-hidden group" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo")'}}>
-                                        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-colors duration-500"></div>
-                                    </div>
-                                </div>
-                                <div class="w-full lg:w-1/2 flex flex-col gap-8 lg:pl-10">
-                                    <div class="flex items-center gap-3 text-primary font-bold tracking-[0.2em] uppercase text-sm">
-                                        <span class="w-12 h-[2px] bg-primary"></span> 關於我們
-                                    </div>
-                                    <h2 class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">重新定義光學工程的未來</h2>
-                                    <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
-                                        宇碩光（Athene Technology Corp.）立足於精密工程與先進材料的交匯點。我們不只是處理光學，我們更是工程化光學表現，使其在醫療、工業與科學研究等關鍵領域發揮極致效能。
-                                    </p>
-                                    <p class="text-slate-600 dark:text-slate-300 text-base leading-relaxed">
-                                        從客製化鏡頭模組到高耐用性鍍膜，我們的解決方案深受全球創新領導者的信賴，在極端環境中提供卓越的清晰度與性能表現。
-                                    </p>
-                                    <div class="pt-4">
-                                        <button onClick={() => navigate('/contact')} class="text-primary font-bold hover:text-blue-400 transition-colors inline-flex items-center gap-2 group text-lg">
-                                            深入了解宇碩光
-                                            <span class="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
+<div class="container">
+  <section class="hero-banner">
+    <h1>RF SERIES</h1>
+    <p>RECTANGLE FRAMED MIRROR</p>
+  </section>
 
-                    <section class="py-24 px-4 md:px-8 bg-white dark:bg-[#15202b] border-y border-slate-100 dark:border-slate-800">
-                        <div class="max-w-7xl mx-auto w-full flex flex-col gap-16">
-                            <div class="flex flex-col gap-4 text-center items-center">
-                                <h2 class="text-slate-900 dark:text-white text-4xl md:text-5xl font-bold leading-tight">核心技術</h2>
-                                <p class="text-slate-500 dark:text-slate-400 text-lg max-w-2xl font-light">宇碩光科技的三大核心支柱，引領光電創新。</p>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
-                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                                        <span class="material-symbols-outlined text-4xl">lens</span>
-                                    </div>
-                                    <div class="flex flex-col gap-4">
-                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">精密光學元件</h3>
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">提供次微米精度的客製化鏡頭與高耐用光學鍍膜，專為極端工業與醫療環境設計。</p>
-                                    </div>
-                                </div>
-                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
-                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                                        <span class="material-symbols-outlined text-4xl">hub</span>
-                                    </div>
-                                    <div class="flex flex-col gap-4">
-                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">雷射系統整合</h3>
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">應用於工業切割、增材製造與精密醫療手術的高功率雷射系統開發與軟硬體整合。</p>
-                                    </div>
-                                </div>
-                                <div class="group flex flex-col gap-8 p-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-background-light dark:bg-background-dark hover:border-primary/50 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500">
-                                    <div class="w-16 h-16 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                                        <span class="material-symbols-outlined text-4xl">center_focus_strong</span>
-                                    </div>
-                                    <div class="flex flex-col gap-4">
-                                        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">影像傳感方案</h3>
-                                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed text-base">新世代感測器陣列與影像處理單元，適用於科學研究與智慧自動化檢測。</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </main>
-            );
-        };
-
-        const ProductsPage = () => {
-    // 1. 僅保留分類狀態
-    const [activeCategory, setActiveCategory] = React.useState('矩形框鏡');
-
-    // 2. 定義側邊欄分類 (對應 index.html 內的過濾關鍵字)
-const categories = [
-    { name: '矩形框鏡', icon: 'rounded_corner', thumb: 'works/thumb_rf.jpg' },
-    { name: '照明方案', icon: 'lightbulb', thumb: 'works/thumb_light.jpg' },
-    { name: '晶體光學', icon: 'diamond', thumb: 'works/thumb_crystal.jpg' },
-    { name: '鍍膜服務', icon: 'layers', thumb: 'works/thumb_coating.jpg' },
-    { name: '實驗室設備', icon: 'science', thumb: 'works/thumb_lab.jpg' }
-];
-
-    /* --- 原本的 allProducts、products、activeFilter 全部已刪除 --- */
-
-    return (
-        <div className="flex-1 w-full flex flex-col lg:flex-row bg-background-light dark:bg-background-dark">
-            
-            {/* 左側邊欄：固定寬度，減少空白 */}
-<aside className="w-full lg:w-64 flex-none lg:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark lg:min-h-screen">
-    <div className="p-4 lg:p-6 lg:sticky lg:top-16">
-        
-        {/* 電腦版標題 (手機隱藏) */}
-        <div className="hidden lg:block mb-6">
-            <h1 className="text-lg font-bold">產品中心</h1>
-            <p className="text-text-sub text-[10px] uppercase tracking-widest">Product Catalog</p>
+  <div class="product-list-wrapper" id="product-list">
+    
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/01-37.png" alt="RFMF-A Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=1'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/02-44.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/light?lock=2'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
         </div>
-
-        {/* 分類按鈕容器 */}
-        {/* 核心邏輯：手機版是橫向縮圖(flex-row)，電腦版是簡潔清單(lg:flex-col) */}
-        <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0 scrollbar-hide snap-x">
-            {categories.map(cat => (
-                <div 
-                    key={cat.name} 
-                    onClick={() => setActiveCategory(cat.name)} 
-                    className={`flex-none flex lg:flex-row flex-col items-center gap-2 lg:gap-3 p-2 lg:px-4 lg:py-3 rounded-2xl lg:rounded-xl border transition-all cursor-pointer snap-start min-w-[90px] lg:min-w-0 ${
-                        activeCategory === cat.name 
-                        ? 'bg-primary/10 border-primary/30 text-primary shadow-sm' 
-                        : 'border-transparent text-text-sub hover:bg-slate-50'
-                    }`}
-                >
-                    {/* 縮圖：手機版顯示，電腦版隱藏 */}
-                    <div className="w-12 h-12 rounded-xl overflow-hidden bg-slate-100 lg:hidden flex-shrink-0 border border-slate-200">
-                        <img 
-                            src={cat.thumb} 
-                            alt={cat.name} 
-                            className="w-full h-full object-cover"
-                            onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='block'; }}
-                        />
-                        <span className="material-symbols-outlined text-primary/40 hidden m-auto text-xl" style={{lineHeight: '48px'}}>{cat.icon}</span>
-                    </div>
-
-                    {/* 圖標：電腦版顯示，手機版隱藏 */}
-                    <span className="material-symbols-outlined hidden lg:block text-xl">
-                        {cat.icon}
-                    </span>
-
-                    {/* 文字：兩者皆顯示，但調整大小 */}
-                    <span className="text-[11px] lg:text-sm font-bold whitespace-nowrap">
-                        {cat.name}
-                    </span>
-                </div>
-            ))}
-        </div>
-
-        {/* 客製化區塊 (僅電腦顯示) */}
-        <div className="hidden lg:block p-4 bg-primary/5 rounded-xl border border-primary/10 mt-10">
-            <p className="text-[11px] font-bold text-primary mb-1">需要客製化規格？</p>
-            <Link to="/contact" className="text-[11px] underline font-black">聯繫工程團隊 →</Link>
-        </div>
+      </div>
     </div>
-</aside>
 
-            {/* 右側主內容：完全填滿，上下極致縮減 */}
-            <main className="flex-1 flex flex-col min-w-0">
-
-
-                {/* iframe 嵌入區：完全填充剩餘空間，無邊距 */}
-                <div className="flex-1 w-full bg-white overflow-hidden">
-                    <iframe 
-                        src={`product-table.html?search=${encodeURIComponent(activeCategory)}`}
-                        title="Product System"
-                        key={activeCategory} 
-                        className="w-full h-full min-h-[calc(100vh-110px)] border-none"
-                        style={{ display: 'block' }}
-                    ></iframe>
-                </div>
-            </main>
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF1080B</td><td>1000</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF1280B</td><td>1200</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF1480B</td><td>1400</td><td>800</td><td>32</td></tr>
+            </tbody>
+          </table>
         </div>
-    );
-};
-const ProjectsPage = () => {
-    const [activeFilter, setActiveFilter] = useState('全部');
-    const [selectedProject, setSelectedProject] = useState(null);
-    const [currentSlide, setCurrentSlide] = useState(0);
+      </div>
+    </div>
 
-    const categories = ['全部', '商業', '文化', '基礎設施', '辦公空間', '展覽'];
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/05-46.png" alt="RFMF-C Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=5'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/06-47.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/glass?lock=6'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody><tr><td>RFMF5070C</td><td>500</td><td>700</td><td>38</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-    // 模擬專案數據，包含 5 張圖片供輪播
-    const projects = [
-        { 
-            id: 1, 
-            category: '商業', 
-            title: '嘉義康倪時代美學莊園', 
-            location: 'CHIAYI, TAIWAN', 
-            images: [
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo', // 替換為實際圖片路徑
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
-            ],
-            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
-            year: '2023',
-            client: '康倪集團',
-            categoryText: 'Commercial Lighting'
-        },
-         { 
-            id: 1, 
-            category: '商業', 
-            title: '嘉義康倪時代美學莊園', 
-            location: 'CHIAYI, TAIWAN', 
-            images: [
-                'https://picsum.photos/id/400/200/300', // 替換為實際圖片路徑
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
-            ],
-            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
-            year: '2023',
-            client: '康倪集團',
-            categoryText: 'Commercial Lighting'
-        },
-         { 
-            id: 1, 
-            category: '商業', 
-            title: '嘉義康倪時代美學莊園', 
-            location: 'CHIAYI, TAIWAN', 
-            images: [
-                'https://picsum.photos/id/30/200/300', // 替換為實際圖片路徑
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
-            ],
-            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
-            year: '2023',
-            client: '康倪集團',
-            categoryText: 'Commercial Lighting'
-        },
-         { 
-            id: 1, 
-            category: '商業', 
-            title: '嘉義康倪時代美學莊園', 
-            location: 'CHIAYI, TAIWAN', 
-            images: [
-                'https://picsum.photos/id/238/200/300', // 替換為實際圖片路徑
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw',
-                'https://lh3.googleusercontent.com/aida-public/AB6AXuDJDTmLw6_a0vgXoCtwiHileLuX5l8keSmNE4Nel5ldf4mZ71zHo8NuOfcJrDuEWGv4wwuPPrwgLreWVT87j5Y6ydpOlDUS_v1izWAuzidytd2LI_jzGlSC2R0q_q2gAX2DCrhv4OFdBaTo_9fruBgYLUSq9wEMWNaPjqGs7BgXT_bD4kWX2FmNvtoeaKQgt6f0490TuMiWGE5IiImNGjYpJoqcy-2-_uqw4dx4tyLwZrAkzyKPGRo9G_OpB61_5pqd1sJ3-Qv4duo'
-            ],
-            description: '康倪時代美學莊園位於嘉義，是一個結合現代光學美學與歐式建築風格的經典案例。宇碩光團隊針對建築立面與室內實驗空間進行精密的配光設計，利用高演色性照明技術，完美呈現莊園內部的藝術細節與精密設備，營造出兼具科學嚴謹與藝術優雅的光環境。',
-            year: '2023',
-            client: '康倪集團',
-            categoryText: 'Commercial Lighting'
-        },
-        // 可依此格式新增其他專案...
-    ];
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/07-48.png" alt="RFMF-D Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=7'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/08.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/corner?lock=8'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070D</td><td>500</td><td>700</td><td>30</td></tr>
+              <tr><td>RFMF8070D</td><td>800</td><td>700</td><td>30</td></tr>
+              <tr><td>RFMF1070D</td><td>1000</td><td>700</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-    // --- 自動輪播邏輯 (秒) ---
-    useEffect(() => {
-        let timer;
-        if (selectedProject && selectedProject.images) {
-            timer = setInterval(() => {
-                setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
-            }, 3500); 
-        }
-        return () => clearInterval(timer);
-    }, [selectedProject]);
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/09.png" alt="RFMF-E Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=9'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/10.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/edge?lock=10'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070E</td><td>500</td><td>700</td><td>30</td></tr>
+              <tr><td>RFMF8070E</td><td>800</td><td>700</td><td>30</td></tr>
+              <tr><td>RFMF1070E</td><td>1000</td><td>700</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-    const filteredProjects = activeFilter === '全部' ? projects : projects.filter(p => p.category === activeFilter);
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/11.png" alt="RFMF-F Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=11'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/12.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/strip?lock=12'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF1170F</td><td>1100</td><td>700</td><td>40</td></tr>
+              <tr><td>RFMF1270F</td><td>1200</td><td>700</td><td>40</td></tr>
+              <tr><td>RFMF1380F</td><td>1300</td><td>800</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-    // --- 詳情頁面：滿版輪播 + 右側文字 ---
-    if (selectedProject) {
-        return (
-            <main className="fixed inset-0 z-[60] bg-white dark:bg-background-dark flex flex-col lg:flex-row overflow-hidden animate-in fade-in duration-700">
-                {/* 左側：滿版輪播區域 */}
-                <div className="relative w-full lg:w-[68%] h-[45vh] lg:h-full bg-slate-900 overflow-hidden">
-                    {selectedProject.images.map((img, idx) => (
-                        <div 
-                            key={idx}
-                            className={`absolute inset-0 transition-opacity duration-[1500ms] ease-in-out ${idx === currentSlide ? 'opacity-100' : 'opacity-0'}`}
-                        >
-                            <img src={img} className="w-full h-full object-cover" alt={`${selectedProject.title}-${idx}`} />
-                        </div>
-                    ))}
-                    
-                    {/* 左下角專案名稱標註 (參考附圖風格) */}
-                    <div className="absolute bottom-8 left-8 z-10">
-                        <p className="text-white/80 text-xs tracking-widest font-light shadow-sm">
-                            {selectedProject.title}
-                        </p>
-                    </div>
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/13.png" alt="RFMF-G Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=13'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/14.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/texture?lock=14'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070G</td><td>500</td><td>700</td><td>40</td></tr>
+              <tr><td>RFMF6070G</td><td>600</td><td>700</td><td>40</td></tr>
+              <tr><td>RFMF8070G</td><td>800</td><td>700</td><td>40</td></tr>
+              <tr><td>RFMF1070G</td><td>1000</td><td>700</td><td>40</td></tr>
+              <tr><td>RFMF1270G</td><td>1200</td><td>700</td><td>40</td></tr>
+              <tr><td>RFMF1470G</td><td>1400</td><td>700</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                    {/* 右下角點狀指示器 (.....) */}
-                    <div className="absolute bottom-8 right-8 z-10 flex gap-2">
-                        {selectedProject.images.map((_, idx) => (
-                            <button 
-                                key={idx}
-                                onClick={() => setCurrentSlide(idx)}
-                                className={`w-2 h-2 rounded-full transition-all duration-300 ${idx === currentSlide ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/60'}`}
-                                aria-label={`Go to slide ${idx + 1}`}
-                            />
-                        ))}
-                    </div>
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/15.png" alt="RFMF-H Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=15'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/16.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/storage?lock=16'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF6080H</td><td>600</td><td>800</td><td>112</td></tr>
+              <tr><td>RFMF8080H</td><td>800</td><td>800</td><td>112</td></tr>
+              <tr><td>RFMF1080H</td><td>1000</td><td>800</td><td>112</td></tr>
+              <tr><td>RFMF1280H</td><td>1200</td><td>800</td><td>112</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                    {/* 返回按鈕 */}
-                    <button 
-                        onClick={() => { setSelectedProject(null); setCurrentSlide(0); }}
-                        className="absolute top-8 left-8 z-20 flex items-center gap-2 text-white bg-black/30 backdrop-blur-md px-5 py-2.5 rounded-full hover:bg-primary transition-all group"
-                    >
-                        <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                        <span className="text-xs font-bold tracking-[0.2em]">BACK</span>
-                    </button>
-                </div>
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/17.png" alt="RFMF-I Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=17'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/18.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/profile?lock=18'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070I</td><td>500</td><td>700</td><td>62</td></tr>
+              <tr><td>RFMF6080I</td><td>600</td><td>800</td><td>62</td></tr>
+              <tr><td>RFMF8080I</td><td>800</td><td>800</td><td>62</td></tr>
+              <tr><td>RFMF1080I</td><td>1000</td><td>800</td><td>62</td></tr>
+              <tr><td>RFMF1280I</td><td>1200</td><td>800</td><td>62</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+<div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/19.png" alt="RFMS-A Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=101'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/20.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/art?lock=102'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMS5070A</td><td>500</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS8070A</td><td>800</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS1070A</td><td>1000</td><td>700</td><td>43</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                {/* 右側：固定文字介紹區域 */}
-                <div className="w-full lg:w-[32%] h-full overflow-y-auto bg-white dark:bg-surface-dark px-8 py-12 lg:px-12 lg:py-20 flex flex-col border-l border-slate-100 dark:border-slate-800">
-                    <div className="mb-10">
-                        <span className="text-primary text-[10px] font-black tracking-[0.4em] uppercase mb-4 block">
-                            {selectedProject.categoryText || 'PROJECT DETAIL'}
-                        </span>
-                        <h1 className="text-3xl font-bold text-slate-900 dark:text-white leading-tight mb-4">
-                            {selectedProject.title}
-                        </h1>
-                        <p className="text-slate-400 text-sm tracking-[0.15em] font-medium">
-                            {selectedProject.location}
-                        </p>
-                    </div>
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/21.png" alt="RFMS-B Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=103'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/22.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/art?lock=104'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMS5070B</td><td>500</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS6080B</td><td>600</td><td>800</td><td>43</td></tr>
+              <tr><td>RFMS8070B</td><td>800</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS1070B</td><td>1000</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS1270B</td><td>1200</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS1470B</td><td>1400</td><td>700</td><td>43</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                    <div className="h-px bg-slate-100 dark:bg-slate-800 w-12 mb-10"></div>
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/23.png" alt="RFMS-C Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=105'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/24.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/art?lock=106'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMS5070C</td><td>500</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS6080C</td><td>600</td><td>800</td><td>43</td></tr>
+              <tr><td>RFMS8070C</td><td>800</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS1070C</td><td>1000</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS1270C</td><td>1200</td><td>700</td><td>43</td></tr>
+              <tr><td>RFMS1470C</td><td>1400</td><td>700</td><td>43</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                    <div className="flex-1">
-                        <p className="text-slate-600 dark:text-slate-300 leading-[2.2] text-[15px] font-light text-justify">
-                            {selectedProject.description}
-                        </p>
-                    </div>
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/25.png" alt="RFMS-D Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=107'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/26.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/art?lock=108'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMS5070D</td><td>500</td><td>700</td><td>30</td></tr>
+              <tr><td>RFMS8060D</td><td>800</td><td>600</td><td>30</td></tr>
+              <tr><td>RFMS7691D</td><td>760</td><td>910</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-                    <div className="mt-12 space-y-4 border-t border-slate-50 dark:border-slate-800 pt-8">
-                        <div className="flex justify-between items-end">
-                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Year</span>
-                            <span className="text-sm font-medium">{selectedProject.year}</span>
-                        </div>
-                        <div className="flex justify-between items-end">
-                            <span className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Client</span>
-                            <span className="text-sm font-medium">{selectedProject.client}</span>
-                        </div>
-                    </div>
-                </div>
-            </main>
-        );
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/27.png" alt="RFMS-E Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=109'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/28.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/art?lock=110'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMS5070E</td><td>500</td><td>700</td><td>30</td></tr>
+              <tr><td>RFMS8060E</td><td>800</td><td>600</td><td>30</td></tr>
+              <tr><td>RFMS7691E</td><td>760</td><td>910</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/29.png" alt="RFMS-F Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=111'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/30.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/art?lock=112'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMS5070F</td><td>500</td><td>700</td><td>130</td></tr>
+              <tr><td>RFMS6070F</td><td>600</td><td>700</td><td>130</td></tr>
+              <tr><td>RFMS8070F</td><td>800</td><td>700</td><td>130</td></tr>
+              <tr><td>RFMS1070F</td><td>1000</td><td>700</td><td>130</td></tr>
+              <tr><td>RFMS1270F</td><td>1200</td><td>700</td><td>130</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/31.png" alt="RFMB-A Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=121'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/32.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/light?lock=122'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMB4575A</td><td>450</td><td>750</td><td>30</td></tr>
+              <tr><td>RFMB6075A</td><td>600</td><td>750</td><td>30</td></tr>
+              <tr><td>RFMB8075A</td><td>800</td><td>750</td><td>30</td></tr>
+              <tr><td>RFMB1075A</td><td>1000</td><td>750</td><td>30</td></tr>
+              <tr><td>RFMB1275A</td><td>1200</td><td>750</td><td>30</td></tr>
+              <tr><td>RFMB1475A</td><td>1400</td><td>750</td><td>30</td></tr>
+              <tr><td>RFMB1675A</td><td>1600</td><td>750</td><td>30</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/33.png" alt="RFMB-B Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=123'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/34.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/light?lock=124'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMB6090B</td><td>600</td><td>900</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/35.png" alt="RFMB-C Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=125'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/36.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/light?lock=126'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMB6080C</td><td>600</td><td>800</td><td>112</td></tr>
+              <tr><td>RFMB8080C</td><td>800</td><td>800</td><td>112</td></tr>
+              <tr><td>RFMB1080C</td><td>1000</td><td>800</td><td>112</td></tr>
+              <tr><td>RFMB1280C</td><td>1200</td><td>800</td><td>112</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/37.png" alt="RFMM-A Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=127'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/38.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/light?lock=128'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMM6016A</td><td>600</td><td>1600</td><td>40</td></tr>
+              <tr><td>RFMM7018A</td><td>700</td><td>1800</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/39.png" alt="RFMM-B Full" onerror="this.src='https://loremflickr.com/300/300/abstract?lock=129'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/40.png" alt="Detail" onerror="this.src='https://loremflickr.com/300/300/light?lock=130'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <tbody>
+              <tr><td>RFMM9090B</td><td>900</td><td>900</td><td>42</td></tr>
+              <tr><td>RFMM1180B</td><td>1100</td><td>800</td><td>42</td></tr>
+              <tr><td>RFMM1285B</td><td>1250</td><td>850</td><td>42</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div> <div id="noResults" class="no-results">找不到符合搜尋條件的產品 / No results found.</div>
+</div>
+<script>
+  function filterProducts() {
+    // 1. 取得搜尋關鍵字並轉為大寫，實現不區分大小寫
+    const filter = document.getElementById('globalSearch').value.toUpperCase().trim();
+    const rows = document.getElementsByClassName('product-row');
+    let hasResult = false;
+
+    // 如果搜尋框是空的，顯示所有產品
+    if (filter === "") {
+      for (let i = 0; i < rows.length; i++) {
+        rows[i].style.display = "flex";
+      }
+      document.getElementById('noResults').style.display = "none";
+      return;
     }
 
-    // --- 列表頁面保持不變 ---
-    return (
-        <main className="flex-1 bg-white dark:bg-background-dark">
-            <section className="px-6 py-20 border-b border-slate-50 dark:border-slate-800">
-                <div className="max-w-7xl mx-auto">
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 italic tracking-tight">設計案例</h1>
-                    <p className="text-slate-400 dark:text-slate-500 tracking-[0.3em] uppercase text-xs font-bold">Design Projects</p>
-                </div>
-            </section>
+    for (let i = 0; i < rows.length; i++) {
+      // 2. 抓取該產品列中所有的表格單元格 (td)
+      const cells = rows[i].getElementsByTagName('td');
+      let matchFound = false;
 
-            <nav className="sticky top-16 z-30 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
-                <div className="max-w-7xl mx-auto px-6 py-5">
-                    <div className="flex gap-8 overflow-x-auto scrollbar-hide">
-                        {categories.map(cat => (
-                            <button 
-                                key={cat}
-                                onClick={() => setActiveFilter(cat)}
-                                className={`text-sm whitespace-nowrap transition-all ${activeFilter === cat ? 'text-primary font-bold border-b-2 border-primary pb-1' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white pb-1'}`}
-                            >
-                                {cat}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            </nav>
+      // 3. 遍歷每一個單元格進行比對
+      for (let j = 0; j < cells.length; j++) {
+        const cellText = cells[j].textContent || cells[j].innerText;
+        
+        // 只要型號、寬、高、深任何一格包含搜尋文字 (例如 800)
+        if (cellText.toUpperCase().indexOf(filter) > -1) {
+          matchFound = true;
+          break; // 找到一個符合就跳出內層迴圈
+        }
+      }
 
-            <section className="px-6 py-16">
-                <div className="max-w-7xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16">
-                        {filteredProjects.map(project => (
-                            <div key={project.id} className="group cursor-pointer" onClick={() => setSelectedProject(project)}>
-                                <div className="aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-slate-800 mb-6 relative">
-                                    <img 
-                                        src={project.images ? project.images[0] : project.image} 
-                                        alt={project.title} 
-                                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-110"
-                                    />
-                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                                        <span className="text-white text-xs font-bold tracking-[0.3em] border border-white px-4 py-2">VIEW</span>
-                                    </div>
-                                </div>
-                                <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-primary transition-colors">{project.title}</h3>
-                                <p className="text-xs text-slate-400 tracking-widest mt-1 uppercase">{project.location}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-        </main>
-    );
-};
-        const ContactPage = () => {
-            return (
-                <main class="flex-1">
-                    <section class="relative px-6 py-16 md:py-24">
-                        <div class="mx-auto max-w-7xl">
-                            <div class="max-w-3xl">
-                                <h1 class="text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-4 text-slate-900 dark:text-white">聯絡我們</h1>
-                                <p class="text-lg md:text-xl text-slate-500 dark:text-slate-400 font-light leading-relaxed">
-                                    期待與您的合作。讓我們以精密的光學技術與先進的光電解決方案，共同照亮未來。
-                                </p>
-                            </div>
-                        </div>
-                        <div class="absolute top-0 right-0 -z-10 h-[500px] w-[500px] rounded-full bg-primary/10 blur-[100px] pointer-events-none"></div>
-                    </section>
-                    
-                    <section class="px-6 pb-20">
-                        <div class="mx-auto max-w-7xl">
-                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-                                <div class="lg:col-span-7">
-                                    <div class="mb-8">
-                                        <h3 class="text-2xl font-bold tracking-tight mb-2">發送訊息</h3>
-                                        <p class="text-slate-500 dark:text-slate-400">我們的團隊通常會在 24 小時內回覆您的需求。</p>
-                                    </div>
-                                    <form class="space-y-6">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">姓名</span>
-                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請輸入您的姓名" type="text"/>
-                                            </label>
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">公司名稱</span>
-                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請輸入公司名稱" type="text"/>
-                                            </label>
-                                        </div>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">電子郵件</span>
-                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="example@athene-tech.com" type="email"/>
-                                            </label>
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">主旨</span>
-                                                <div class="relative">
-                                                    <select class="h-12 w-full appearance-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary">
-                                                        <option>一般諮詢</option>
-                                                        <option>產品支援</option>
-                                                        <option>業務合作</option>
-                                                        <option>媒體公關</option>
-                                                    </select>
-                                                    
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <label class="flex flex-col gap-2">
-                                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">內容</span>
-                                            <textarea class="h-32 w-full resize-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請描述您的需求，我們將竭誠為您服務。"></textarea>
-                                        </label>
-                                        <button class="inline-flex h-12 min-w-[160px] items-center justify-center rounded-lg bg-primary px-6 font-bold text-white shadow-sm hover:bg-blue-600 transition-all" type="button">提交訊息</button>
-                                    </form>
-                                </div>
-                                <div class="lg:col-span-5 flex flex-col gap-8">
-                                    <div class="rounded-xl bg-slate-100 dark:bg-slate-800/50 p-8 border border-slate-200 dark:border-slate-700/50">
-                                        <h4 class="text-lg font-bold mb-6 flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-primary">hub</span> 公司資訊
-                                        </h4>
-                                        <div class="space-y-6">
-                                            <div class="flex items-start gap-4">
-                                                <div class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white dark:bg-slate-700 text-primary shadow-sm">
-                                                    <span class="material-symbols-outlined text-[20px]">location_on</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-slate-900 dark:text-white">地址</p>
-                                                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">242040 新北市新莊區化成路186號2樓</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex items-start gap-4">
-                                                <div class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white dark:bg-slate-700 text-primary shadow-sm">
-                                                    <span class="material-symbols-outlined text-[20px]">call</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-medium text-slate-900 dark:text-white">電話</p>
-                                                    <p class="text-slate-500 dark:text-slate-400 text-sm mt-1"> 02 8521 8383</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-<div class="h-64 w-full overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 shadow-sm">
-    <iframe 
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.6496853855256!2d121.46566990000001!3d25.0459599!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a9a2288fc4c5%3A0xa7f2e36db772cae2!2z5a6H56Kp5YWJ!5e0!3m2!1szh-TW!2stw!4v1770002220544!5m2!1szh-TW!2stw" 
-        width="100%" 
-        height="100%" 
-        style={{ border: 0 }} 
-        allowFullScreen="" 
-        loading="lazy" 
-        referrerPolicy="no-referrer-when-downgrade">
-    </iframe>
-</div>
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-                </main>
-            );
-        };
-
-        // --- Main App ---
-
-        const App = () => {
-            const { pathname } = useLocation();
-
-            // Scroll to top on route change
-            useEffect(() => {
-                window.scrollTo(0, 0);
-            }, [pathname]);
-
-            return (
-                <div class="relative flex flex-col min-h-screen w-full">
-                    <Header />
-                    <Routes>
-                        <Route path="/" element={<HomePage />} />
-                        <Route path="/products" element={<ProductsPage />} />
-                        <Route path="/projects" element={<ProjectsPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-                    </Routes>
-                    <Footer />
-                </div>
-            );
-        };
-
-        const root = createRoot(document.getElementById('root'));
-        root.render(
-            <MemoryRouter>
-                <App />
-            </MemoryRouter>
-        );
-    </script>
-<div id="google_translate_element"></div>
-<div id="google_translate_element"></div>
-
-<div id="google_translate_element"></div>
-<div id="google_translate_element" style="display:none;"></div>
-
-<script type="text/javascript">
-    function googleTranslateElementInit() {
-        new google.translate.TranslateElement({
-            pageLanguage: 'zh-TW',
-            // 使用 SIMPLE 版介面減少干擾
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false 
-        }, 'google_translate_element');
+      // 4. 根據比對結果顯示或隱藏該列
+      if (matchFound) {
+        rows[i].style.display = "flex";
+        hasResult = true;
+      } else {
+        rows[i].style.display = "none";
+      }
     }
 
-    // 核心修復：透過 Cookie 切換語系，並強制隱藏頂部橫條
-    window.doGTranslate = function(lang) {
-        var langCode = (lang === 'zh-TW') ? 'zh-TW' : 'en';
-        var domain = window.location.hostname;
-        
-        // 寫入 Google 翻譯必備的 Cookie
-        document.cookie = "googtrans=/zh-TW/" + langCode + "; path=/";
-        document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + domain + "; path=/";
-        
-        // 再次確保 Cookie 寫入成功（處理部分瀏覽器相容性）
-        if (domain.split('.').length > 2) {
-            var rootDomain = domain.substring(domain.lastIndexOf(".", domain.lastIndexOf(".") - 1) + 1);
-            document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + rootDomain + "; path=/";
-        }
-
-        // 重新整理頁面，這樣就不會出現 Google 的橫條選單
-        window.location.reload();
-    };
-
-    // 額外保險：強制用 CSS 移除可能出現的橫條殘影
-    var style = document.createElement('style');
-    style.innerHTML = `
-        .goog-te-banner-frame { display: none !important; }
-        body { top: 0px !important; }
-        .skiptranslate { display: none !important; }
-    `;
-    document.head.appendChild(style);
+    // 5. 顯示或隱藏「查無結果」提示
+    document.getElementById('noResults').style.display = hasResult ? "none" : "block";
+  }
 </script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
+
 
 
 
