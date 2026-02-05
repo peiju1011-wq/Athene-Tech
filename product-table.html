@@ -25,25 +25,37 @@ body {
   display: none !important; /* 嵌入時強制隱藏原本的 Logo 欄位 */
 }
 
-/* --- 2. 搜尋列：改善為無膠囊框感 --- */
+/* --- 修正後的搜尋與表格空間優化 --- */
 .search-container {
   position: sticky; 
   top: 0; 
   z-index: 9999;
-  background: transparent !important; /* 移除白底 */
-  padding: 10px 0; 
-  margin-bottom: 5px;
-  border-bottom: none !important; /* 移除底部橫線 */
+  background: transparent !important;
+  /* 縮減上下 padding 從 10px 降至 5px */
+  padding: 5px 0 !important; 
+  margin-bottom: 0 !important;
   max-width: 100% !important;
-  box-shadow: none !important; /* 移除陰影 */
+  box-shadow: none !important;
 }
 
-/* 如果搜尋輸入框本身有太重的陰影或背景，也可以在此微調 */
 #globalSearch {
-  /*background-color: white;  搜尋框內保持白色方便閱讀 */
-  border: 1px solid #e2e8f0; /* 使用更淡的邊框 */
+  width: 100%;
+  height: 38px;
+  /* 關鍵！padding-left 必須大於圖示寬度 + left 距離 */
+  padding: 0 15px 0 40px !important; 
+  border: 1px solid #e2e8f0;
   border-radius: 50px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* 極淡陰影 */
+  background-color: white;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.2s;
+}
+
+/* 核心修改：大幅縮減表格單元格的上下間距，節省空間 */
+#productTable th, #productTable td {
+  padding: 6px 4px !important; /* 讓型號與尺寸資料更緊湊 */
+  line-height: 1.2 !important;
+  vertical-align: middle !important;
 }
   .search-box { max-width: 1300px; margin: 0 auto; padding: 0 20px; position: relative; }
   .search-box input {
@@ -101,7 +113,7 @@ body {
   <div class="search-box">
     <div class="search-wrapper">
       <svg class="search-icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-      <input type="text" id="globalSearch" placeholder="搜尋型號或尺寸 / Search Model or Size..." onkeyup="filterProducts()">
+      <input type="text" id="globalSearch" placeholder="搜尋型號或尺寸" onkeyup="filterProducts()">
     </div>
   </div>
 </div>
@@ -122,7 +134,7 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
             <tbody>
               <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
               <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
@@ -141,7 +153,7 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
             <tbody>
               <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
               <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
@@ -163,7 +175,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody><tr><td>RFMF5070C</td><td>500</td><td>700</td><td>38</td></tr></tbody>
           </table>
         </div>
@@ -178,7 +214,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMF5070D</td><td>500</td><td>700</td><td>30</td></tr>
               <tr><td>RFMF8070D</td><td>800</td><td>700</td><td>30</td></tr>
@@ -197,7 +257,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMF5070E</td><td>500</td><td>700</td><td>30</td></tr>
               <tr><td>RFMF8070E</td><td>800</td><td>700</td><td>30</td></tr>
@@ -216,7 +300,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMF1170F</td><td>1100</td><td>700</td><td>40</td></tr>
               <tr><td>RFMF1270F</td><td>1200</td><td>700</td><td>40</td></tr>
@@ -235,7 +343,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMF5070G</td><td>500</td><td>700</td><td>40</td></tr>
               <tr><td>RFMF6070G</td><td>600</td><td>700</td><td>40</td></tr>
@@ -257,7 +389,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMF6080H</td><td>600</td><td>800</td><td>112</td></tr>
               <tr><td>RFMF8080H</td><td>800</td><td>800</td><td>112</td></tr>
@@ -277,7 +433,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMF5070I</td><td>500</td><td>700</td><td>62</td></tr>
               <tr><td>RFMF6080I</td><td>600</td><td>800</td><td>62</td></tr>
@@ -297,7 +477,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMS5070A</td><td>500</td><td>700</td><td>43</td></tr>
               <tr><td>RFMS8070A</td><td>800</td><td>700</td><td>43</td></tr>
@@ -316,7 +520,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMS5070B</td><td>500</td><td>700</td><td>43</td></tr>
               <tr><td>RFMS6080B</td><td>600</td><td>800</td><td>43</td></tr>
@@ -338,7 +566,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMS5070C</td><td>500</td><td>700</td><td>43</td></tr>
               <tr><td>RFMS6080C</td><td>600</td><td>800</td><td>43</td></tr>
@@ -360,7 +612,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMS5070D</td><td>500</td><td>700</td><td>30</td></tr>
               <tr><td>RFMS8060D</td><td>800</td><td>600</td><td>30</td></tr>
@@ -379,7 +655,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMS5070E</td><td>500</td><td>700</td><td>30</td></tr>
               <tr><td>RFMS8060E</td><td>800</td><td>600</td><td>30</td></tr>
@@ -398,7 +698,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMS5070F</td><td>500</td><td>700</td><td>130</td></tr>
               <tr><td>RFMS6070F</td><td>600</td><td>700</td><td>130</td></tr>
@@ -419,7 +743,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMB4575A</td><td>450</td><td>750</td><td>30</td></tr>
               <tr><td>RFMB6075A</td><td>600</td><td>750</td><td>30</td></tr>
@@ -442,7 +790,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMB6090B</td><td>600</td><td>900</td><td>40</td></tr>
             </tbody>
@@ -459,7 +831,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMB6080C</td><td>600</td><td>800</td><td>112</td></tr>
               <tr><td>RFMB8080C</td><td>800</td><td>800</td><td>112</td></tr>
@@ -479,7 +875,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMM6016A</td><td>600</td><td>1600</td><td>40</td></tr>
               <tr><td>RFMM7018A</td><td>700</td><td>1800</td><td>40</td></tr>
@@ -497,7 +917,31 @@ body {
       <div class="product-data">
         <div class="table-container">
           <table>
-            <thead><tr><th>型號 / Item Code</th><th>寬 / Width</th><th>高 / Height</th><th>深 / Depth</th></tr></thead>
+               <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF8060A</td><td>800</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1060A</td><td>1000</td><td>600</td><td>40</td></tr>
+              <tr><td>RFMF1260A</td><td>1200</td><td>600</td><td>40</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-row">
+      <div class="product-images">
+        <div class="img-box"><img src="works/03-43.png" alt="RFMF-B Full" onerror="this.src='https://loremflickr.com/220/220/mirror?lock=3'"><div class="img-label">全景圖</div></div>
+        <div class="img-box"><img src="works/04-45.png" alt="Detail" onerror="this.src='https://loremflickr.com/220/220/frame?lock=4'"><div class="img-label">細節照</div></div>
+      </div>
+      <div class="product-data">
+        <div class="table-container">
+          <table>
+            <thead><tr><th>型號</th><th>寬</th><th>高</th><th>深</th></tr></thead>
+            <tbody>
+              <tr><td>RFMF5070B</td><td>500</td><td>700</td><td>32</td></tr>
+              <tr><td>RFMF6080B</td><td>600</td><td>800</td><td>32</td></tr>
+              <tr><td>RFMF8080B</td><td>800</td><td>800</td><td>32</td></tr>
             <tbody>
               <tr><td>RFMM9090B</td><td>900</td><td>900</td><td>42</td></tr>
               <tr><td>RFMM1180B</td><td>1100</td><td>800</td><td>42</td></tr>
@@ -510,6 +954,57 @@ body {
   </div> <div id="noResults" class="no-results">找不到符合搜尋條件的產品 / No results found.</div>
 </div>
 <script>
+  // 語系資料庫
+// 1. 定義翻譯對照表
+const i18n = {
+  zh: { placeholder: "搜尋型號或尺寸...", full: "全景圖", detail: "細節照", code: "型號", width: "寬", height: "高", depth: "深" },
+  en: { placeholder: "Search Model or Size...", full: "Overview", detail: "Details", code: "Item Code", width: "Width", height: "Height", depth: "Depth" }
+};
+
+function applyTableTranslation() {
+  const lang = localStorage.getItem('selectedLang') || 'zh';
+  const content = i18n[lang] || i18n.zh;
+  
+  // 1. 翻譯搜尋框
+  const sInput = document.getElementById('globalSearch');
+  if(sInput) sInput.placeholder = content.placeholder;
+
+  // 2. 自動根據內容翻譯圖片標籤
+  document.querySelectorAll('.img-label').forEach(el => {
+    if (el.innerText.includes('全景') || el.innerText.includes('Overview')) {
+      el.innerText = content.full;
+    } else if (el.innerText.includes('細節') || el.innerText.includes('Detail')) {
+      el.innerText = content.detail;
+    }
+  });
+
+  // 3. 自動翻譯所有表格標頭 (依據欄位順序 0,1,2,3)
+  document.querySelectorAll('thead tr').forEach(tr => {
+    const ths = tr.querySelectorAll('th');
+    if (ths.length >= 4) {
+      ths[0].innerText = content.code;
+      ths[1].innerText = content.width;
+      ths[2].innerText = content.height;
+      ths[3].innerText = content.depth;
+    }
+  });
+}
+
+// 監聽父層即時訊息
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'changeLanguage') {
+    localStorage.setItem('selectedLang', event.data.lang);
+    applyTableTranslation();
+  }
+});
+
+// 初始化載入
+window.addEventListener('load', applyTableTranslation);
+
+// 4. 初始化 (確保一進頁面就翻譯)
+window.addEventListener('load', updateLanguage);
+// 核心修復：初始化時從 localStorage 讀取語言（解決重新整理失效問題）
+
   function filterProducts() {
     // 1. 取得搜尋關鍵字並轉為大寫，實現不區分大小寫
     const filter = document.getElementById('globalSearch').value.toUpperCase().trim();
@@ -557,6 +1052,7 @@ body {
 
 </body>
 </html>
+
 
 
 
