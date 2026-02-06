@@ -960,11 +960,17 @@ const ProjectsPage = () => {
 window.doGTranslate = function(lang) {
     var langCode = (lang === 'zh-TW') ? 'zh-TW' : 'en';
     
-    // 核心修復：儲存語系標籤到 localStorage
+    // 儲存狀態，確保頁面重新整理後 Navbar 知道該亮哪顆燈
     localStorage.setItem('selectedLang', langCode === 'zh-TW' ? 'zh' : 'en');
 
-    // 寫入 Google 翻譯 Cookie 並重新整理
+    // 寫入 Google 翻譯必備的 Cookie
     document.cookie = "googtrans=/zh-TW/" + langCode + "; path=/";
+    
+    // 針對 GitHub Pages 網域優化（加強版寫法）
+    var domain = window.location.hostname;
+    document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + domain + "; path=/";
+    
+    // 重新整理
     window.location.reload();
 };
 
