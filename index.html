@@ -502,8 +502,9 @@ const categories = [
             {/* 左側邊欄：固定寬度，減少空白 */}
 
 
+
 <aside className="w-full lg:w-64 flex-none lg:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark">
-    {/* 手機版內距微調，電腦版維持 p-6 */}
+    {/* 手機版內距 p-1.5，電腦版維持 p-6 */}
     <div className="p-1.5 lg:p-6 lg:sticky lg:top-16">
         
         {/* 電腦版標題 (完全不動) */}
@@ -512,44 +513,42 @@ const categories = [
             <p className="text-text-sub text-[10px] uppercase tracking-widest">Product Catalog</p>
         </div>
 
-        {/* 選單容器 */}
+        {/* 選單容器：手機橫向、電腦垂直 */}
         <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-hide snap-x items-center lg:items-stretch">
             {categories.map(cat => (
                 <div 
                     key={cat.name} 
                     onClick={() => setActiveCategory(cat.name)} 
-                    /* 手機版反饋：active:bg-slate-50 (點擊瞬間微亮) + active:scale-95
-                       電腦版反饋：lg:hover:text-text-main (維持原樣)
-                    */
-                    className={`flex-none flex lg:flex-row flex-col items-center lg:items-center justify-center lg:justify-start transition-all duration-200 cursor-pointer snap-start px-5 py-3 lg:px-2 lg:py-2 lg:min-w-0 active:bg-slate-50 lg:active:bg-transparent rounded-xl lg:rounded-none ${
+                    /* 電腦版保持 lg:px-2 與原本 Hover；手機版 px-5 撐開商業感間距 */
+                    className={`flex-none flex lg:flex-row flex-col items-center lg:items-center justify-center lg:justify-start transition-all duration-300 cursor-pointer snap-start px-3 py-3 lg:px-2 lg:py-2 lg:min-w-0 active:opacity-70 ${
                         activeCategory === cat.name 
                         ? 'text-primary' 
                         : 'text-slate-400 lg:hover:text-text-main'
                     }`}
                 >
-                    {/* --- 電腦版圖示：維持原樣 (lg:block) --- */}
+                    {/* --- 電腦版圖示：完全維持原樣 (lg:block) --- */}
                     <span className="material-symbols-outlined hidden lg:block text-xl lg:mr-3">
                         {cat.icon}
                     </span>
 
-                    {/* --- 文字排版：仿「設計案例」粗體感 --- */}
+                    {/* --- 文字排版：對標「設計案例」高級感 --- */}
                     <div className="relative flex flex-col items-center lg:items-start">
-                        <span className={`whitespace-nowrap transition-all duration-200 ${
+                        <span className={`whitespace-nowrap transition-all duration-300 ${
                             activeCategory === cat.name 
-                            /* 手機版選中：16px, 極粗 font-black 
-                               電腦版選中：14px, font-bold (維持原樣)
+                            /* 手機版選中：18px, font-black (極粗) 
+                               電腦版選中：維持 sm (14px), font-bold
                             */
-                            ? 'text-[16px] lg:text-sm font-black lg:font-bold opacity-100' 
-                            /* 手機版未選中：16px, font-bold, 預設半透明 (模擬未點擊狀態)
-                               手機版按住瞬間 (hover感)：active:opacity-100
+                            ? 'text-[14px] lg:text-sm font-[900] lg:font-bold' 
+                            /* 手機版未選中：18px, font-bold, 只有 30% 透明度 (營造高級對比)
+                               電腦版未選中：維持 sm (14px), font-bold, 不透明
                             */
-                            : 'text-[16px] lg:text-sm font-bold opacity-40 lg:opacity-100 active:opacity-100'
+                            : 'text-[14px] lg:text-sm font-bold opacity-30 lg:opacity-100'
                         }`}>
                             {cat.name}
                         </span>
 
-                        {/* 手機版專屬粗底線 (3px)，電腦版隱藏 */}
-                        <div className={`h-[3px] rounded-full bg-primary transition-all duration-300 lg:hidden ${
+                        {/* 手機版專屬粗底線 (4px 厚度)，加強選中感 */}
+                        <div className={`h-[2px] rounded-full bg-primary transition-all duration-500 lg:hidden ${
                             activeCategory === cat.name ? 'w-full mt-1.5' : 'w-0 mt-1.5'
                         }`} />
                     </div>
