@@ -530,23 +530,16 @@ const categories = [
                         {cat.icon}
                     </span>
 
-                    {/* --- 文字排版：對標「設計案例」高級感 --- */}
-                    <div className="relative flex flex-col items-center lg:items-start">
+   <div className="relative flex flex-col items-center lg:items-start">
                         <span className={`whitespace-nowrap transition-all duration-300 ${
                             activeCategory === cat.name 
-                            /* 手機版選中：18px, font-black (極粗) 
-                               電腦版選中：維持 sm (14px), font-bold
-                            */
-                            ? 'text-[15px] lg:text-sm font-[500] lg:font-bold' 
-                            /* 手機版未選中：18px, font-bold, 只有 30% 透明度 (營造高級對比)
-                               電腦版未選中：維持 sm (14px), font-bold, 不透明
-                            */
-                            : 'text-[13px] lg:text-sm font-bold opacity-30 lg:opacity-100'
+                            ? 'text-[14px] lg:text-sm font-[1000] lg:font-bold' 
+                            : 'text-[13px] lg:text-sm font-bold opacity-100 lg:opacity-100'
                         }`}>
                             {cat.name}
-                        </span>
+                        </span></span>
 
-                        {/* 手機版專屬粗底線 (4px 厚度)，加強選中感 */}
+                        {/* 手機版專屬粗底線 (2px 厚度)，加強選中感 */}
                         <div className={`h-[2px] rounded-full bg-primary transition-all duration-500 lg:hidden ${
                             activeCategory === cat.name ? 'w-full mt-1.5' : 'w-0 mt-1.5'
                         }`} />
