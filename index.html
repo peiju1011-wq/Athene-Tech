@@ -512,57 +512,37 @@ const categories = [
             <p className="text-text-sub text-[10px] uppercase tracking-widest">Product Catalog</p>
         </div>
 
-        {/* 選單容器：優化手機滾動感與視覺重心 */}
-        <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-hide snap-x">
+        {/* 選單容器：手機版純文字排版優化 */}
+        <div className="flex lg:flex-col gap-2 lg:gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 scrollbar-hide snap-x items-center">
             {categories.map(cat => (
                 <div 
                     key={cat.name} 
                     onClick={() => setActiveCategory(cat.name)} 
-                    /* 電腦版樣式與 hover 完全保留；手機版微調 min-w 以對齊中心 */
-                    className={`flex-none flex lg:flex-row flex-col items-center justify-center gap-1 p-2 transition-all cursor-pointer snap-start min-w-[82px] lg:min-w-0 ${
+                    /* 電腦版保持原本的寬度與樣式；手機版移除 min-w 限制，改用內距撐開空間 */
+                    className={`flex-none flex lg:flex-row flex-col items-center justify-center transition-all duration-300 cursor-pointer snap-start px-4 py-1.5 lg:px-2 lg:py-2 lg:min-w-0 rounded-full lg:rounded-none ${
                         activeCategory === cat.name 
-                        ? 'text-primary' 
+                        ? 'text-primary lg:bg-transparent' 
                         : 'text-slate-400 lg:hover:text-text-main'
                     }`}
                 >
-                    {/* --- 手機版專屬：圖示優化 (lg:hidden) --- */}
-                    <div className={`lg:hidden flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-500 ${
-                        activeCategory === cat.name 
-                        ? 'bg-primary/5 shadow-[0_4px_12px_-4px_rgba(41,114,177,0.25)] scale-110 mb-1' 
-                        : 'bg-transparent mb-1 opacity-70'
-                    }`}>
-                        <span 
-                            className="material-symbols-outlined transition-all duration-300"
-                            style={{ 
-                                /* 選中時 32px 實心加粗，未選中時 28px 空心細線 */
-                                fontSize: activeCategory === cat.name ? '32px' : '28px',
-                                fontVariationSettings: activeCategory === cat.name ? "'FILL' 1, 'wght' 600" : "'FILL' 0, 'wght' 300",
-                                lineHeight: '1',
-                                display: 'block'
-                            }}
-                        >
-                            {cat.icon}
-                        </span>
-                    </div>
-
-                    {/* --- 電腦版圖示：維持原樣 (hidden lg:block) --- */}
-                    <span className="material-symbols-outlined hidden lg:block text-xl">
+                    {/* --- 電腦版圖示：維持原樣 (手機版隱藏) --- */}
+                    <span className="material-symbols-outlined hidden lg:block text-xl mr-2">
                         {cat.icon}
                     </span>
 
-                    {/* 文字：手機版增加字重對比，電腦版維持原有字體樣式 */}
-                    <span className={`text-[11px] lg:text-sm whitespace-nowrap text-center transition-all duration-300 ${
+                    {/* 文字排版：手機版字體放大至 14px 增加閱讀性，選中時加粗 */}
+                    <span className={`text-14 lg:text-sm whitespace-nowrap text-center transition-all duration-300 ${
                         activeCategory === cat.name 
-                        ? 'font-black opacity-100 lg:font-bold' 
-                        : 'font-bold opacity-60 lg:opacity-100'
+                        ? 'font-black scale-105 opacity-100' 
+                        : 'font-medium opacity-70 lg:opacity-100 lg:font-bold'
                     }`}>
                         {cat.name}
                     </span>
 
-                    {/* 選中指示線：手機版精緻底線，電腦版隱藏 */}
-                    {activeCategory === cat.name && (
-                        <div className="w-5 h-0.5 bg-primary rounded-full mt-1 lg:hidden" />
-                    )}
+                    {/* 手機版底部指示條：改為更精緻的膠囊點，增加純文字排版的層次感 */}
+                    <div className={`h-1 rounded-full bg-primary transition-all duration-500 lg:hidden ${
+                        activeCategory === cat.name ? 'w-3 mt-1 opacity-100' : 'w-0 mt-0 opacity-0'
+                    }`} />
                 </div>
             ))}
         </div>
