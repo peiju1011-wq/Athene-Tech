@@ -503,7 +503,7 @@ const categories = [
 
 
 <aside className="w-full lg:w-64 flex-none lg:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark">
-    {/* 手機版縮減 p-2 -> p-1.5，移除多餘高度 */}
+    {/* 手機版內距微調，電腦版維持 p-6 */}
     <div className="p-1.5 lg:p-6 lg:sticky lg:top-16">
         
         {/* 電腦版標題 (完全不動) */}
@@ -512,37 +512,47 @@ const categories = [
             <p className="text-text-sub text-[10px] uppercase tracking-widest">Product Catalog</p>
         </div>
 
-        {/* 選單容器：手機版純文字排版優化 */}
-        <div className="flex lg:flex-col gap-2 lg:gap-1 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 scrollbar-hide snap-x items-center">
+        {/* 選單容器 */}
+        <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-hide snap-x items-center lg:items-stretch">
             {categories.map(cat => (
                 <div 
                     key={cat.name} 
                     onClick={() => setActiveCategory(cat.name)} 
-                    /* 電腦版保持原本的寬度與樣式；手機版移除 min-w 限制，改用內距撐開空間 */
-                    className={`flex-none flex lg:flex-row flex-col items-center justify-center transition-all duration-300 cursor-pointer snap-start px-4 py-1.5 lg:px-2 lg:py-2 lg:min-w-0 rounded-full lg:rounded-none ${
+                    /* 手機版反饋：active:bg-slate-50 (點擊瞬間微亮) + active:scale-95
+                       電腦版反饋：lg:hover:text-text-main (維持原樣)
+                    */
+                    className={`flex-none flex lg:flex-row flex-col items-center lg:items-center justify-center lg:justify-start transition-all duration-200 cursor-pointer snap-start px-5 py-3 lg:px-2 lg:py-2 lg:min-w-0 active:bg-slate-50 lg:active:bg-transparent rounded-xl lg:rounded-none ${
                         activeCategory === cat.name 
-                        ? 'text-primary lg:bg-transparent' 
+                        ? 'text-primary' 
                         : 'text-slate-400 lg:hover:text-text-main'
                     }`}
                 >
-                    {/* --- 電腦版圖示：維持原樣 (手機版隱藏) --- */}
-                    <span className="material-symbols-outlined hidden lg:block text-xl mr-2">
+                    {/* --- 電腦版圖示：維持原樣 (lg:block) --- */}
+                    <span className="material-symbols-outlined hidden lg:block text-xl lg:mr-3">
                         {cat.icon}
                     </span>
 
-                    {/* 文字排版：手機版字體放大至 14px 增加閱讀性，選中時加粗 */}
-                    <span className={`text-14 lg:text-sm whitespace-nowrap text-center transition-all duration-300 ${
-                        activeCategory === cat.name 
-                        ? 'font-black scale-105 opacity-100' 
-                        : 'font-medium opacity-70 lg:opacity-100 lg:font-bold'
-                    }`}>
-                        {cat.name}
-                    </span>
+                    {/* --- 文字排版：仿「設計案例」粗體感 --- */}
+                    <div className="relative flex flex-col items-center lg:items-start">
+                        <span className={`whitespace-nowrap transition-all duration-200 ${
+                            activeCategory === cat.name 
+                            /* 手機版選中：16px, 極粗 font-black 
+                               電腦版選中：14px, font-bold (維持原樣)
+                            */
+                            ? 'text-[16px] lg:text-sm font-black lg:font-bold opacity-100' 
+                            /* 手機版未選中：16px, font-bold, 預設半透明 (模擬未點擊狀態)
+                               手機版按住瞬間 (hover感)：active:opacity-100
+                            */
+                            : 'text-[16px] lg:text-sm font-bold opacity-40 lg:opacity-100 active:opacity-100'
+                        }`}>
+                            {cat.name}
+                        </span>
 
-                    {/* 手機版底部指示條：改為更精緻的膠囊點，增加純文字排版的層次感 */}
-                    <div className={`h-1 rounded-full bg-primary transition-all duration-500 lg:hidden ${
-                        activeCategory === cat.name ? 'w-3 mt-1 opacity-100' : 'w-0 mt-0 opacity-0'
-                    }`} />
+                        {/* 手機版專屬粗底線 (3px)，電腦版隱藏 */}
+                        <div className={`h-[3px] rounded-full bg-primary transition-all duration-300 lg:hidden ${
+                            activeCategory === cat.name ? 'w-full mt-1.5' : 'w-0 mt-1.5'
+                        }`} />
+                    </div>
                 </div>
             ))}
         </div>
