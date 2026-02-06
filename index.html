@@ -506,55 +506,60 @@ const categories = [
     {/* 手機版縮減 p-2 -> p-1.5，移除多餘高度 */}
     <div className="p-1.5 lg:p-6 lg:sticky lg:top-16">
         
-        {/* 電腦版標題 */}
+        {/* 電腦版標題 (完全不動) */}
         <div className="hidden lg:block mb-6">
             <h1 className="text-lg font-bold">產品中心</h1>
             <p className="text-text-sub text-[10px] uppercase tracking-widest">Product Catalog</p>
         </div>
 
-        {/* 選單容器：移除了原本項目的灰色背景與邊框線 */}
+        {/* 選單容器：優化手機滾動感與視覺重心 */}
         <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-hide snap-x">
             {categories.map(cat => (
                 <div 
                     key={cat.name} 
                     onClick={() => setActiveCategory(cat.name)} 
-                    /* 關鍵修改：min-w-[75px] 確保圖示與文字垂直對齊，移除 border 與 bg */
-                    className={`flex-none flex lg:flex-row flex-col items-center justify-center gap-1 p-2 transition-all cursor-pointer snap-start min-w-[75px] lg:min-w-0 ${
+                    /* 電腦版樣式與 hover 完全保留；手機版微調 min-w 以對齊中心 */
+                    className={`flex-none flex lg:flex-row flex-col items-center justify-center gap-1 p-2 transition-all cursor-pointer snap-start min-w-[82px] lg:min-w-0 ${
                         activeCategory === cat.name 
                         ? 'text-primary' 
-                        : 'text-slate-400 hover:text-text-main'
+                        : 'text-slate-400 lg:hover:text-text-main'
                     }`}
                 >
-                    {/* 手機版圖示：無背景、放大至 text-3xl、置中 */}
-                <div className="lg:hidden flex items-center justify-center bg-transparent mb-1">
-    <span 
-        className={`material-symbols-outlined transition-all duration-300 ${
-            activeCategory === cat.name 
-            ? 'text-[32px] text-primary' // 選中時放大至 32px 並變色
-            : 'text-[28px] text-slate-400' // 未選中時稍小，維持低調灰色
-        }`}
-        style={{ 
-            // 透過 fontVariationSettings 讓選中後的圖示「加粗」或「變實心」
-            fontVariationSettings: activeCategory === cat.name ? "'FILL' 1, 'wght' 500" : "'FILL' 0, 'wght' 300",
-            lineHeight: '1',
-            display: 'block'
-        }}
-    >
-        {cat.icon}
-    </span>
-</div>
+                    {/* --- 手機版專屬：圖示優化 (lg:hidden) --- */}
+                    <div className={`lg:hidden flex items-center justify-center w-14 h-14 rounded-2xl transition-all duration-500 ${
+                        activeCategory === cat.name 
+                        ? 'bg-primary/5 shadow-[0_4px_12px_-4px_rgba(41,114,177,0.25)] scale-110 mb-1' 
+                        : 'bg-transparent mb-1 opacity-70'
+                    }`}>
+                        <span 
+                            className="material-symbols-outlined transition-all duration-300"
+                            style={{ 
+                                /* 選中時 32px 實心加粗，未選中時 28px 空心細線 */
+                                fontSize: activeCategory === cat.name ? '32px' : '28px',
+                                fontVariationSettings: activeCategory === cat.name ? "'FILL' 1, 'wght' 600" : "'FILL' 0, 'wght' 300",
+                                lineHeight: '1',
+                                display: 'block'
+                            }}
+                        >
+                            {cat.icon}
+                        </span>
+                    </div>
 
-                    {/* 電腦版圖示：維持原樣 */}
+                    {/* --- 電腦版圖示：維持原樣 (hidden lg:block) --- */}
                     <span className="material-symbols-outlined hidden lg:block text-xl">
                         {cat.icon}
                     </span>
 
-                    {/* 字體：與圖示等寬置中 */}
-                    <span className="text-[11px] lg:text-sm font-bold whitespace-nowrap text-center">
+                    {/* 文字：手機版增加字重對比，電腦版維持原有字體樣式 */}
+                    <span className={`text-[11px] lg:text-sm whitespace-nowrap text-center transition-all duration-300 ${
+                        activeCategory === cat.name 
+                        ? 'font-black opacity-100 lg:font-bold' 
+                        : 'font-bold opacity-60 lg:opacity-100'
+                    }`}>
                         {cat.name}
                     </span>
 
-                    {/* 選中指示線：在手機版顯示一個簡約的底線，取代原本的灰色大框框 */}
+                    {/* 選中指示線：手機版精緻底線，電腦版隱藏 */}
                     {activeCategory === cat.name && (
                         <div className="w-5 h-0.5 bg-primary rounded-full mt-1 lg:hidden" />
                     )}
