@@ -315,7 +315,7 @@
                         </div>
                         <div class="flex flex-col gap-4">
                             <h5 class="font-bold text-slate-900 dark:text-white mb-2 text-base">聯絡我們</h5>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">joey@athene-tech.com</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">atheneled@gmail.com</p>
                             <p class="text-sm text-slate-600 dark:text-slate-400">+886 2 8521 8383</p>
                             <div class="flex gap-4 mt-2">
                                 <a class="text-slate-400 hover:text-primary transition-colors" href="#"><span class="material-symbols-outlined text-xl">public</span></a>
@@ -330,7 +330,7 @@
                     </div>
                     <div class="border-t border-slate-200 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
                         <p class="text-xs text-slate-400 font-light tracking-wide">© 2024 宇碩光 Athene Technology Corp. 版權所有.</p>
-                        <div class="flex gap-8">
+                        <div class="flex gap-8">atheneled@gmail.com
                             <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">隱私政策</a>
                             <a class="text-xs text-slate-400 hover:text-primary transition-colors" href="#">使用條款</a>
                         </div>
@@ -347,64 +347,45 @@
                 <main class="flex-grow">
                     <section class="relative w-full">
                         <div class="@container">
-                            <div class="flex min-h-[700px] flex-col gap-8 bg-cover bg-center bg-no-repeat items-center justify-center p-8 relative" style={{backgroundImage: 'linear-gradient(rgba(16, 25, 34, 0.5) 0%, rgba(16, 25, 34, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuBAft81sZpumnMZKAJMjIuItcsFr8rp5utdS98h0WDEWC_G0VVuW5TmZrSOhvu24SMOUCi1R7mTAorhzwNSDh561WAc2YUTjZUfIvb7nrnGGT6XP2sXp-groX9PZvDCXOs5jTZf7Gc9Yc7URCjvEc1bafACJSTomgYasONWDau9IrOtfXZXn8VKTk4I3WX-4xCJ3KHKd0YUgI_FBl_832W0ixBB9vaY5BBn2BEJplHCadTk17o_29Vl4TFwf9cc3ujgcl_WVwNlZWw")'}}>
-                                <div class="max-w-4xl flex flex-col gap-6 text-center z-10">
-                                    <h1 class="text-white text-5xl md:text-8xl font-bold leading-tight tracking-tight">光學技術的領航者</h1>
-                                    <h2 class="text-slate-100 text-lg md:text-2xl font-light max-w-3xl mx-auto leading-relaxed tracking-wide opacity-90">
-                                        宇碩光專注於尖端光電技術研發，為次世代科技提供精準的工業應用與光學合理解決方案。
-                                    </h2>
+                           <div class="@container">
+                    {/* 影片容器：高度維持 700px，移除所有背景圖與漸層 */}
+                    <div class="relative flex min-h-[700px] w-full items-center justify-center overflow-hidden">
+                        
+                        {/* 背景影片：自動播放、靜音、循環、禁止手機自動全螢幕 */}
+             <div className="absolute inset-0 z-0 h-full w-full">
+<div className="absolute inset-0 z-0 h-full w-full overflow-hidden bg-black flex items-center justify-center">
+    {/* YouTube 影片層：
+        1. 移除 scale 或設為 100%，確保按鈕不被裁切。
+        2. w-full h-full 配合 object-contain 確保影片完整呈現。
+    */}
+    <iframe 
+        className="w-full h-full pointer-events-auto" 
+        src="https://www.youtube.com/embed/SJa_bat1Qxw?autoplay=1&mute=0&loop=1&playlist=SJa_bat1Qxw&controls=1&showinfo=0&rel=0&modestbranding=1" 
+        frameBorder="0" 
+        allow="autoplay; encrypted-media" 
+        allowFullScreen>
+    </iframe>
 
-<div class="flex items-center justify-center gap-8 md:gap-12 pt-10">
-  
-  {/* 按鈕一：作品集 (folder_open) */}
-  <div class="relative group">
-    {/* 背景微光暈 */}
-    <div class="absolute inset-0 rounded-full bg-blue-500/10 scale-125 blur-xl group-hover:bg-blue-400/30 transition-all duration-700"></div>
-    
-    <button 
-      onClick={() => navigate('/projects')}
-      className="group relative cursor-pointer flex items-center justify-center w-20 h-20 rounded-full border-2 border-white/10 text-white transition-all duration-500 overflow-visible bg-transparent"
-    >
-      {/* 統一的極細流光弧線 */}
-      <div className="jump-target absolute inset-[-4px] rounded-full border-[1.5px] border-transparent border-t-white/80 border-l-white/20 opacity-0 group-hover:opacity-100 transition-all duration-700 rotate-[45deg] group-hover:rotate-[405deg]"></div>
-      
-      {/* 圖標層 */}
-      <div className="jump-target relative z-10">
-        <span className="material-symbols-outlined text-3xl font-light text-white/60 group-hover:text-white transition-colors duration-300">
-          folder_open
-        </span>
-      </div>
-
-      {/* 內圈背景微光 */}
-      <div className="absolute inset-0 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    </button>
-  </div>
-
-  {/* 按鈕二：聯絡我們 (email) */}
-  <div class="relative group">
-    {/* 背景微光暈 (與左邊保持對稱) */}
-    <div class="absolute inset-0 rounded-full bg-blue-500/10 scale-125 blur-xl group-hover:bg-blue-400/30 transition-all duration-700"></div>
-    
-    <button 
-      onClick={() => navigate('/contact')}
-      className="group relative cursor-pointer flex items-center justify-center w-20 h-20 rounded-full border-2 border-white/10 text-white transition-all duration-500 overflow-visible bg-transparent"
-    >
-      {/* 統一的極細流光弧線 */}
-      <div className="jump-target absolute inset-[-4px] rounded-full border-[1.5px] border-transparent border-t-white/80 border-l-white/20 opacity-0 group-hover:opacity-100 transition-all duration-700 rotate-[45deg] group-hover:rotate-[405deg]"></div>
-      
-      {/* 圖標層 */}
-      <div className="jump-target relative z-10">
-        <span className="material-symbols-outlined text-3xl font-light text-white/60 group-hover:text-white transition-colors duration-300">
-          email
-        </span>
-      </div>
-
-      {/* 內圈背景微光 */}
-      <div className="absolute inset-0 rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-    </button>
-  </div>
-
+    {/* 右下角進入官網按鈕：位置調整到較高處，避免擋住 YouTube 的進度條 */}
+    <div className="absolute bottom-24 right-8 z-30">
+        <a 
+            href="https://www.athene-tech.com" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border border-white/30 px-6 py-3 rounded-full transition-all duration-300 group"
+        >
+            <span className="font-light tracking-widest text-xs lg:text-sm">ENTER OFFICIAL SITE</span>
+            <span className="material-symbols-outlined text-xl group-hover:translate-x-1 transition-transform">
+                arrow_right_alt
+            </span>
+        </a>
+    </div>
 </div>
+</div>
+
+
+
+
                                 </div>
                             </div>
                         </div>
@@ -494,8 +475,6 @@ const categories = [
     { name: '研發新品', icon: 'auto_awesome', thumb: 'works/thumb_lab.jpg' }
 ];
 
-    /* --- 原本的 allProducts、products、activeFilter 全部已刪除 --- */
-
     return (
         <div className="flex-1 w-full flex flex-col lg:flex-row bg-background-light dark:bg-background-dark">
             
@@ -530,7 +509,7 @@ const categories = [
                         {cat.icon}
                     </span>
 
- {/* --- 文字排版：對標「設計案例」高級感 --- */}
+  {/* --- 文字排版：對標「設計案例」高級感 --- */}
                     <div className="relative flex flex-col items-center lg:items-start">
                         <span className={`whitespace-nowrap transition-all duration-300 ${
                             activeCategory === cat.name 
