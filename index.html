@@ -520,7 +520,7 @@ const categories = [
                     key={cat.name} 
                     onClick={() => setActiveCategory(cat.name)} 
                     /* 電腦版保持 lg:px-2 與原本 Hover；手機版 px-5 撐開商業感間距 */
-                    className={`flex-none flex lg:flex-row flex-col items-center lg:items-center justify-center lg:justify-start transition-all duration-300 cursor-pointer snap-start px-3 py-3 lg:px-2 lg:py-2 lg:min-w-0 active:opacity-70 ${
+                    className={`flex-none flex lg:flex-row flex-col items-center lg:items-center justify-center lg:justify-start transition-all duration-300 cursor-pointer snap-start px-2 py-2 lg:px-2 lg:py-2 lg:min-w-0 active:opacity-70 ${
                         activeCategory === cat.name 
                         ? 'text-primary' 
                         : 'text-slate-400 lg:hover:text-text-main'
@@ -538,11 +538,11 @@ const categories = [
                             /* 手機版選中：18px, font-black (極粗) 
                                電腦版選中：維持 sm (14px), font-bold
                             */
-                            ? 'text-[14px] lg:text-sm font-[900] lg:font-bold' 
+                            ? 'text-[13px] lg:text-sm font-[900] lg:font-bold' 
                             /* 手機版未選中：18px, font-bold, 只有 30% 透明度 (營造高級對比)
                                電腦版未選中：維持 sm (14px), font-bold, 不透明
                             */
-                            : 'text-[14px] lg:text-sm font-bold opacity-30 lg:opacity-100'
+                            : 'text-[13px] lg:text-sm font-bold opacity-30 lg:opacity-100'
                         }`}>
                             {cat.name}
                         </span>
