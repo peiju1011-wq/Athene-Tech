@@ -537,7 +537,7 @@ const categories = [
                             /* 手機版選中：18px, font-black (極粗) 
                                電腦版選中：維持 sm (14px), font-bold
                             */
-                            ? 'text-[13px] lg:text-sm font-normal lg:font-bold opacity-100'
+                            ? 'text-[14px] lg:text-sm font-normal lg:font-bold opacity-100'
                             /* 手機版未選中：18px, font-bold, 只有 30% 透明度 (營造高級對比)
                                電腦版未選中：維持 sm (14px), font-bold, 不透明
                             */
@@ -548,7 +548,7 @@ const categories = [
 
                         {/* 手機版專屬粗底線 (4px 厚度)，加強選中感 */}
                         <div className={`h-[2px] rounded-full bg-primary transition-all duration-500 lg:hidden ${
-                            activeCategory === cat.name ? 'w-full mt-0.5' : 'w-0 mt-0.5'
+                            activeCategory === cat.name ? 'w-1/3 mt-0.5' : 'w-0 mt-0.5'
                         }`} />
                     </div>
                 </div>
