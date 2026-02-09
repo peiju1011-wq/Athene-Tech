@@ -367,35 +367,33 @@
     </iframe>
 
     {/* 右下角進入官網按鈕：位置調整到較高處，避免擋住 YouTube 的進度條 */}
-<div className="absolute bottom-12 right-12 z-20"> {/* 調整至右下角，留出適度邊距 */}
-    <button 
-        onClick={() => navigate('/projects')}
+    <div className="absolute bottom-24 right-8 z-30">
+<Link 
+        to="/projects" 
         className="
             flex items-center gap-4 
-            bg-white/5 hover:bg-white/15 
+            bg-white/5 hover:bg-white/20 
             backdrop-blur-xl 
             text-white 
             border border-white/20 hover:border-white/40
-            pl-8 pr-6 py-4 
+            pl-7 pr-5 py-3.5 
             rounded-full 
             transition-all duration-500 
             group 
-            shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]
+            hover:scale-105
+            shadow-[0_10px_40px_rgba(0,0,0,0.3)]
         "
     >
-        {/* 文字部分：增加字距與質感 */}
-        <span className="font-medium tracking-[0.2em] text-[11px] lg:text-xs uppercase">
-            View Projects
+        <span className="font-medium tracking-[0.2em] text-[10px] lg:text-xs uppercase">
+            Discovery Projects
         </span>
-        
-        {/* 圖標部分：增加圓形容器感 */}
         <div className="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 group-hover:bg-primary transition-colors duration-500">
-            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform duration-500">
+            <span className="material-symbols-outlined text-lg group-hover:translate-x-1 transition-transform">
                 arrow_right_alt
             </span>
         </div>
-    </button>
-</div>
+    </Link>
+    </div>
 </div>
 </div>
 
