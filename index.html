@@ -815,41 +815,79 @@ const ProjectsPage = () => {
                                         <h3 class="text-2xl font-bold tracking-tight mb-2">發送訊息</h3>
                                         <p class="text-slate-500 dark:text-slate-400">我們的團隊通常會在 24 小時內回覆您的需求。</p>
                                     </div>
-                                    <form class="space-y-6">
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">姓名</span>
-                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請輸入您的姓名" type="text"/>
-                                            </label>
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">公司名稱</span>
-                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請輸入公司名稱" type="text"/>
-                                            </label>
-                                        </div>
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">電子郵件</span>
-                                                <input class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="example@athene-tech.com" type="email"/>
-                                            </label>
-                                            <label class="flex flex-col gap-2">
-                                                <span class="text-sm font-medium text-slate-700 dark:text-slate-300">主旨</span>
-                                                <div class="relative">
-                                                    <select class="h-12 w-full appearance-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary">
-                                                        <option>一般諮詢</option>
-                                                        <option>產品支援</option>
-                                                        <option>業務合作</option>
-                                                        <option>媒體公關</option>
-                                                    </select>
-                                                    
-                                                </div>
-                                            </label>
-                                        </div>
-                                        <label class="flex flex-col gap-2">
-                                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300">內容</span>
-                                            <textarea class="h-32 w-full resize-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="請描述您的需求，我們將竭誠為您服務。"></textarea>
-                                        </label>
-                                        <button class="inline-flex h-12 min-w-[160px] items-center justify-center rounded-lg bg-primary px-6 font-bold text-white shadow-sm hover:bg-blue-600 transition-all" type="button">提交訊息</button>
-                                    </form>
+                                                                        <form 
+  class="space-y-6"
+  action="https://formspree.io/f/xqedapwz"
+  method="POST"
+>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <label class="flex flex-col gap-2">
+      <span class="text-sm font-medium text-slate-700 dark:text-slate-300">姓名</span>
+      <input
+        name="name"
+        class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary"
+        placeholder="請輸入您的姓名"
+        type="text"
+        required
+      />
+    </label>
+
+    <label class="flex flex-col gap-2">
+      <span class="text-sm font-medium text-slate-700 dark:text-slate-300">公司名稱</span>
+      <input
+        name="company"
+        class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary"
+        placeholder="請輸入公司名稱"
+        type="text"
+      />
+    </label>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <label class="flex flex-col gap-2">
+      <span class="text-sm font-medium text-slate-700 dark:text-slate-300">電子郵件</span>
+      <input
+        name="email"
+        class="h-12 w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary"
+        placeholder="example@athene-tech.com"
+        type="email"
+        required
+      />
+    </label>
+
+    <label class="flex flex-col gap-2">
+      <span class="text-sm font-medium text-slate-700 dark:text-slate-300">主旨</span>
+      <div class="relative">
+        <select
+          name="subject"
+          class="h-12 w-full appearance-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary"
+        >
+          <option>一般諮詢</option>
+          <option>產品支援</option>
+          <option>業務合作</option>
+          <option>媒體公關</option>
+        </select>
+      </div>
+    </label>
+  </div>
+
+  <label class="flex flex-col gap-2">
+    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">內容</span>
+    <textarea
+      name="message"
+      class="h-32 w-full resize-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-4 text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary"
+      placeholder="請描述您的需求，我們將竭誠為您服務。"
+      required
+    ></textarea>
+  </label>
+
+  <button
+    class="inline-flex h-12 min-w-[160px] items-center justify-center rounded-lg bg-primary px-6 font-bold text-white shadow-sm hover:bg-blue-600 transition-all"
+    type="submit"
+  >
+    提交訊息
+  </button>
+</form>
                                 </div>
                                 <div class="lg:col-span-5 flex flex-col gap-8">
                                     <div class="rounded-xl bg-slate-100 dark:bg-slate-800/50 p-8 border border-slate-200 dark:border-slate-700/50">
