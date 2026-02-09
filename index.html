@@ -604,6 +604,25 @@ const ProjectsPage = () => {
             client: 'cooperation',
             categoryText: 'Commercial Lighting'
         },
+          { 
+            id: 1, 
+            category: '商業', 
+            title: 'Xiaobantian Cable-Stayed Bridge', 
+            location: 'LUGH Township, TAIWAN', 
+           images: [
+  'works/lugu01.jpg',
+  'works/lugu02.jpg',
+  'works/lugu03.jpg',
+  'works/lugu04.jpg',
+  'works/lugu05.jpg',
+  'works/lugu06.jpg'
+],
+
+            description: '利用 LED 高演色性光源，精準勾勒斜張橋索的優美線條。透過動態色彩控制系統，讓橋樑在夜幕下呈現如彩虹般的繽紛變換，或轉化為靜謐尊貴的紫色光影。',
+            year: '2025',
+            client: 'cooperation',
+            categoryText: 'Commercial Lighting'
+        },
         
         // 可依此格式新增其他專案...
     ];
@@ -614,7 +633,7 @@ const ProjectsPage = () => {
         if (selectedProject && selectedProject.images) {
             timer = setInterval(() => {
                 setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
-            }, 3000); 
+            }, 3500); 
         }
         return () => clearInterval(timer);
     }, [selectedProject]);
@@ -1007,4 +1026,3 @@ form.addEventListener("submit", async function (e) {
 
 </body>
 </html>
-
