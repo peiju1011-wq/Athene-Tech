@@ -689,14 +689,22 @@ const ProjectsPage = () => {
                         ))}
                     </div>
 
-                    {/* 返回按鈕 */}
-                    <button 
-                        onClick={() => { setSelectedProject(null); setCurrentSlide(0); }}
-                        className="absolute top-8 left-8 z-20 flex items-center gap-2 text-white bg-black/30 backdrop-blur-md px-5 py-2.5 rounded-full hover:bg-primary transition-all group"
-                    >
-                        <span className="material-symbols-outlined text-sm group-hover:-translate-x-1 transition-transform">arrow_back</span>
-                        <span className="text-xs font-bold tracking-[0.2em]">BACK</span>
-                    </button>
+                   
+{/* 優化後的返回按鈕 */}
+<button 
+    onClick={() => { setSelectedProject(null); setCurrentSlide(0); }}
+    className="absolute top-4 left-4 lg:top-8 lg:left-8 z-20 flex items-center gap-2 text-white bg-black/40 backdrop-blur-md p-2.5 lg:px-5 lg:py-2.5 rounded-full hover:bg-primary transition-all group border border-white/10"
+>
+    {/* 圖示：手機版不變，電腦版稍微調整 */}
+    <span className="material-symbols-outlined text-[20px] lg:text-sm group-hover:-translate-x-1 transition-transform">
+        arrow_back
+    </span>
+    
+    {/* 文字：手機版隱藏 (hidden)，電腦版顯示 (lg:block) */}
+    <span className="hidden lg:block text-xs font-bold tracking-[0.2em]">
+        BACK
+    </span>
+</button>
                 </div>
 
                 {/* 右側：固定文字介紹區域 */}
