@@ -758,10 +758,10 @@ const ProjectsPage = () => {
         </p>
     </div>
 
-    {/* 主標題 - 保持極粗體展現力道 */}
-    <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight">
-        設計<span className="text-primary inline-block hover:scale-105 transition-transform duration-300">案例</span>
-    </h1>
+  {/* 主標題 - 手機版調輕字重並拉開間距，電腦版維持力道 */}
+<h1 className="text-4xl md:text-6xl font-bold md:font-black text-slate-900 dark:text-white tracking-[0.05em] md:tracking-tighter leading-tight">
+    設計<span className="text-primary inline-block hover:scale-105 transition-transform duration-300">案例</span>
+</h1>
 
     {/* 底部副標題 - 手機版優化：字重調輕、字距拉開、防止擁擠 */}
     <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-4">
