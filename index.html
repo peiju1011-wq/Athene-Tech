@@ -852,12 +852,10 @@ const ProjectsPage = () => {
 </form>
 
 
-    <div id="success-msg" class="hidden flex flex-col items-center justify-center py-10 text-center bg-white dark:bg-slate-800 rounded-lg border border-primary animate-in fade-in zoom-in">
-        <span class="material-symbols-outlined text-6xl text-primary mb-4">check_circle</span>
-        <h3 class="text-2xl font-bold text-slate-900 dark:text-white">寄送成功！</h3>
-        <p class="text-slate-600 dark:text-slate-400 mt-2">我們已收到您的訊息，會盡快回覆您。</p>
-        <button onclick="window.location.reload()" class="mt-6 text-sm text-primary hover:underline font-medium">發送新訊息</button>
-    </div>
+   <div id="success-msg" class="hidden mt-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-center gap-2">
+    <span class="text-green-600 font-medium">✓ Thank you! Message sent.</span>
+</div>
+
 </div>
 
 
@@ -982,44 +980,50 @@ window.doGTranslate = function(lang) {
     `;
     document.head.appendChild(style);
 </script>
+
 <script>
-const form = document.getElementById("athene-contact-form");
-const submitBtn = document.getElementById("submit-btn");
-const successMsg = document.getElementById("success-msg");
+// 在 script 標籤中找到處理 form 的部分並更新
+const handleFormSubmit = async (e) => {
+    e.preventDefault(); // 絕對關鍵：阻止導向新頁面
+    
+    const form = e.target;
+    const submitBtn = document.getElementById("submit-btn");
+    const successMsg = document.getElementById("success-msg");
+    const formData = new FormData(form);
 
-form.addEventListener("submit", async function (e) {
-  e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = "傳送中...";
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = "送出中…";
+    try {
+        const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
 
-  const data = new FormData(form);
-
-  try {
-    const response = await fetch(form.action, {
-      method: form.method,
-      body: data,
-      headers: {
-        Accept: "application/json"
-      }
-    });
-
-    if (response.ok) {
-      // 隱藏表單
-      form.classList.add("hidden");
-
-      // 顯示成功畫面
-      successMsg.classList.remove("hidden");
-
-      form.reset();
-    } else {
-      throw new Error("Form submission failed");
+        if (response.ok) {
+            // 隱藏表單，顯示成功訊息 (如您上傳的圖3效果)
+            form.style.display = 'none';
+            successMsg.classList.remove("hidden");
+            form.reset();
+        } else {
+            const data = await response.json();
+            throw new Error(data.error || "提交失敗");
+        }
+    } catch (error) {
+        alert("❌ 發生錯誤：" + error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "提交訊息";
     }
-  } catch (error) {
-    submitBtn.disabled = false;
-    submitBtn.textContent = "提交訊息";
-    alert("❌ 發送失敗，請稍後再試");
-  }
+};
+
+// 由於您的 React 是動態渲染的，建議將監聽器放在全域代理
+document.addEventListener("submit", function(e) {
+    if (e.target && e.target.id === "athene-contact-form") {
+        handleFormSubmit(e);
+    }
 });
 </script>
 
