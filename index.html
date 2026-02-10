@@ -633,7 +633,7 @@ const ProjectsPage = () => {
         if (selectedProject && selectedProject.images) {
             timer = setInterval(() => {
                 setCurrentSlide((prev) => (prev + 1) % selectedProject.images.length);
-            }, 3500); 
+            }, 3000); 
         }
         return () => clearInterval(timer);
     }, [selectedProject]);
