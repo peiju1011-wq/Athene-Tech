@@ -971,47 +971,71 @@ const ProjectsPage = () => {
         );
     </script>
 <div id="google_translate_element"></div>
-<div id="google_translate_element"></div>
-
-<div id="google_translate_element"></div>
-<div id="google_translate_element" style="display:none;"></div>
 
 <script type="text/javascript">
+    // 2. 初始化：恢復 SIMPLE 佈局，這會讓 Google 生成原始的下拉選單框
     function googleTranslateElementInit() {
         new google.translate.TranslateElement({
             pageLanguage: 'zh-TW',
-            // 使用 SIMPLE 版介面減少干擾
+            includedLanguages: 'en,ja,ko,zh-CN,zh-TW',
+            // 使用 SIMPLE 佈局可以確保生成標準的 select 元件
             layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: false 
+            autoDisplay: true 
         }, 'google_translate_element');
     }
 
-window.doGTranslate = function(lang) {
-    var langCode = (lang === 'zh-TW') ? 'zh-TW' : 'en';
-    
-    // 儲存狀態，確保頁面重新整理後 Navbar 知道該亮哪顆燈
-    localStorage.setItem('selectedLang', langCode === 'zh-TW' ? 'zh' : 'en');
+    // 3. 修復後的 doGTranslate (同時支援「Cookie 刷新」與「即時切換」)
+    window.doGTranslate = function(lang) {
+        var langCode = (lang === 'zh-TW') ? 'zh-TW' : lang;
+        
+        // 嘗試直接操作下拉選單 (即時翻譯)
+        var select = document.querySelector('select.goog-te-combo');
+        if (select) {
+            select.value = langCode;
+            select.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        
+        // 同時寫入 Cookie (確保重新整理後依然維持翻譯)
+        document.cookie = "googtrans=/zh-TW/" + langCode + "; path=/";
+        document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + window.location.hostname + "; path=/";
+        
+        // 儲存狀態給 Navbar
+        localStorage.setItem('selectedLang', lang === 'zh-TW' ? 'zh' : 'en');
+        
+        // 如果點擊後沒反應，才執行重新整理 (保險機制)
+        setTimeout(function() {
+            if (document.documentElement.lang !== langCode) {
+                window.location.reload();
+            }
+        }, 300);
+    };
 
-    // 寫入 Google 翻譯必備的 Cookie
-    document.cookie = "googtrans=/zh-TW/" + langCode + "; path=/";
-    
-    // 針對 GitHub Pages 網域優化（加強版寫法）
-    var domain = window.location.hostname;
-    document.cookie = "googtrans=/zh-TW/" + langCode + "; domain=" + domain + "; path=/";
-    
-    // 重新整理
-    window.location.reload();
-};
-
-    // 額外保險：強制用 CSS 移除可能出現的橫條殘影
+    // 4. 只用 CSS 隱藏頂部橫條，不隱藏 google_translate_element
+   // 4. 強制隱藏 Google 原生 UI，但保留 DOM 讓 doGTranslate 運作
     var style = document.createElement('style');
     style.innerHTML = `
+        /* 1. 隱藏畫面上的翻譯框容器 */
+        #google_translate_element { 
+            position: absolute !important;
+            top: -9999px !important;
+            left: -9999px !important;
+            visibility: hidden !important;
+        }
+
+        /* 2. 隱藏頂部橫條、彈窗與多餘殘影 */
         .goog-te-banner-frame { display: none !important; }
-        body { top: 0px !important; }
         .skiptranslate { display: none !important; }
+        #goog-gt-tt { display: none !important; }
+        .goog-te-balloon-frame { display: none !important; }
+        
+        /* 3. 修復 Body 位移與字體背景 */
+        body { top: 0px !important; position: static !important; }
+        font { background-color: transparent !important; box-shadow: none !important; }
     `;
     document.head.appendChild(style);
 </script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <script>
 // 在 script 標籤中找到處理 form 的部分並更新
