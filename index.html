@@ -560,6 +560,8 @@ const categories = [
             ))}
         </div>
     </div>
+
+    
 </aside>
             {/* 右側主內容：完全填滿，上下極致縮減 */}
             <main className="flex-1 flex flex-col min-w-0">
@@ -738,10 +740,27 @@ const ProjectsPage = () => {
     return (
         <main className="flex-1 bg-white dark:bg-background-dark">
             <section className="px-6 py-20 border-b border-slate-50 dark:border-slate-800">
-                <div className="max-w-7xl mx-auto">
-                    <h1 className="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white mb-4 italic tracking-tight">設計案例</h1>
-                    <p className="text-slate-400 dark:text-slate-500 tracking-[0.3em] uppercase text-xs font-bold">Design Projects</p>
-                </div>
+            <div className="max-w-7xl mx-auto mb-12 lg:mb-16">
+    {/* 頂部裝飾標籤 - 增加光學科技感 */}
+    <div className="flex items-center gap-3 mb-4 group">
+        <div className="w-10 h-[2px] bg-primary group-hover:w-16 transition-all duration-500"></div>
+        <p className="text-primary tracking-[0.4em] uppercase text-[10px] md:text-xs font-black">
+            Design Projects
+        </p>
+    </div>
+
+    {/* 主標題 - 移除斜體，改用極粗體與追蹤間距優化視覺 */}
+    <h1 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tighter leading-tight">
+        設計<span className="text-primary inline-block hover:scale-105 transition-transform duration-300">案例</span>
+    </h1>
+
+    {/* 底部副標題或裝飾線 */}
+    <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-4">
+        <p className="text-slate-500 dark:text-slate-400 text-sm font-medium tracking-wide border-l-2 border-primary/50 pl-4 py-1">
+            精準配光 · 藝術實踐 · 景觀亮化
+        </p>
+    </div>
+</div>
             </section>
 
             <nav className="sticky top-16 z-30 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
