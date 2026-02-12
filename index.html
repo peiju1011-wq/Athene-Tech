@@ -513,7 +513,7 @@ const ProductsPage = () => {
         { name: '研發新品', icon: 'auto_awesome' }
     ];
 
-    // 點擊外部收合邏輯 (手機與電腦共用)
+    // 點擊外部收合
     React.useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -525,52 +525,32 @@ const ProductsPage = () => {
     }, []);
 
     return (
-        <div className="flex-1 w-full flex flex-col lg:flex-row bg-background-light dark:bg-background-dark relative">
+        <div className="flex-1 w-full flex flex-col lg:flex-row bg-background-light dark:bg-background-dark relative overflow-hidden">
             
-            {/* 1. 電腦版側邊欄導覽 (隱藏手機版項目) */}
-            <aside ref={menuRef} className="hidden lg:flex w-64 flex-none border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark z-40">
+            {/* 1. 電腦版側邊欄 (維持現狀) */}
+            <aside className="hidden lg:flex w-64 flex-none border-r border-slate-200 bg-white z-40">
                 <div className="p-6 sticky top-16 w-full">
-                    <div 
-                        className={`mb-6 cursor-pointer hover:text-primary transition-colors ${activeCategory === 'all' ? 'text-primary' : ''}`}
-                        onClick={() => { setActiveCategory('all'); setShowSubMenu(false); }}
-                    >
+                    <div className="mb-6 cursor-pointer" onClick={() => {setActiveCategory('all'); setShowSubMenu(false);}}>
                         <h1 className="text-lg font-bold">產品中心</h1>
-                        <p className="text-text-sub text-[10px] uppercase tracking-widest">Product Catalog</p>
+                        <p className="text-xs text-slate-400">Product Catalog</p>
                     </div>
-
-                    <div className="flex flex-col gap-1 relative">
+                    <div className="flex flex-col gap-1 relative" ref={menuRef}>
                         {categories.map(cat => (
                             <div key={cat.name} className="relative">
                                 <div 
                                     onClick={() => {
                                         if (cat.subSeries) setShowSubMenu(!showSubMenu);
                                         else { setActiveCategory(cat.name); setShowSubMenu(false); }
-                                    }} 
-                                    className={`flex items-center px-3 py-2.5 rounded-xl transition-all cursor-pointer ${
-                                        (activeCategory === cat.name || (cat.subSeries && cat.subSeries.some(s => activeCategory === s.id)))
-                                        ? 'text-primary bg-blue-50/50' : 'text-slate-400 hover:text-text-main hover:bg-slate-50'
-                                    }`}
+                                    }}
+                                    className={`flex items-center px-3 py-2.5 rounded-xl cursor-pointer ${ (activeCategory === cat.name || (cat.subSeries && cat.subSeries.some(s => activeCategory === s.id))) ? 'bg-blue-50 text-primary' : 'text-slate-500' }`}
                                 >
                                     <span className="material-symbols-outlined text-xl mr-3">{cat.icon}</span>
                                     <span className="text-sm font-bold flex-1">{cat.name}</span>
-                                    {cat.subSeries && (
-                                        <span className="material-symbols-outlined text-xs">
-                                            {showSubMenu ? 'expand_less' : 'chevron_right'}
-                                        </span>
-                                    )}
                                 </div>
-
-                                {/* 電腦版側邊彈出選單 (按您的需求：點擊後不收合) */}
                                 {cat.subSeries && showSubMenu && (
-                                    <div className="absolute left-full top-0 ml-2 bg-white dark:bg-surface-dark shadow-[0_15px_50px_rgba(0,0,0,0.15)] border border-slate-100 rounded-2xl py-2 w-48 z-50">
+                                    <div className="absolute left-full top-0 ml-2 bg-white shadow-xl border rounded-2xl py-2 w-48 z-50">
                                         {cat.subSeries.map(sub => (
-                                            <button
-                                                key={sub.id}
-                                                onClick={() => setActiveCategory(sub.id)}
-                                                className={`w-full px-5 py-2.5 text-left text-xs transition-colors ${
-                                                    activeCategory === sub.id ? 'text-primary bg-blue-50 font-bold' : 'text-slate-600 hover:text-primary hover:bg-slate-50'
-                                                }`}
-                                            >
+                                            <button key={sub.id} onClick={() => setActiveCategory(sub.id)} className={`w-full px-5 py-2 text-left text-xs ${activeCategory === sub.id ? 'text-primary font-bold' : 'text-slate-600'}`}>
                                                 {sub.label}
                                             </button>
                                         ))}
@@ -582,46 +562,45 @@ const ProductsPage = () => {
                 </div>
             </aside>
 
-            {/* 2. 手機版上方固定分類 (維持大類切換) */}
-            <div className="lg:hidden w-full bg-white border-b border-slate-100 z-30 sticky top-0">
-                <div className="flex overflow-x-auto scrollbar-hide p-2 gap-2">
-                    {categories.map(cat => (
-                        <button
-                            key={cat.name}
-                            onClick={() => {
-                                setActiveCategory(cat.name);
-                                // 如果切換到燈條類，自動收起手機浮動球選單
-                                if (!cat.subSeries) setShowSubMenu(false);
-                            }}
-                            className={`flex-none px-4 py-2 rounded-full text-xs font-bold transition-all ${
-                                (activeCategory === cat.name || (cat.subSeries && cat.subSeries.some(s => activeCategory === s.id)))
-                                ? 'bg-primary text-white shadow-md' : 'bg-slate-50 text-slate-400'
-                            }`}
-                        >
-                            {cat.name}
-                        </button>
-                    ))}
+            {/* 2. 手機版：不遮擋式頂部導覽 */}
+            <div className="lg:hidden w-full bg-white/80 backdrop-blur-md border-b border-slate-100 z-30 sticky top-0">
+                <div className="flex items-center p-2">
+                    <div className="flex overflow-x-auto scrollbar-hide gap-2 flex-1">
+                        {categories.map(cat => (
+                            <button
+                                key={cat.name}
+                                onClick={() => {
+                                    setActiveCategory(cat.name);
+                                    if (cat.subSeries) setShowSubMenu(true); // 點擊矩形鏡直接打開浮動球
+                                    else setShowSubMenu(false);
+                                }}
+                                className={`flex-none px-4 py-1.5 rounded-full text-xs font-bold ${ (activeCategory === cat.name || (cat.subSeries && cat.subSeries.some(s => activeCategory === s.id))) ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400' }`}
+                            >
+                                {cat.name}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
-            {/* 3. 主內容區 */}
+            {/* 3. 主內容區 (Iframe) */}
             <main className="flex-1 min-w-0 relative">
                 <iframe 
                     src={`product-table.html?search=${encodeURIComponent((activeCategory === 'all' || activeCategory === '矩形框鏡') ? '' : activeCategory)}`}
                     key={activeCategory} 
-                    className="w-full h-full min-h-[calc(100vh-120px)] lg:min-h-screen border-none"
+                    className="w-full h-full min-h-[calc(100vh-100px)] border-none"
                 ></iframe>
 
-                {/* 4. 手機版專屬：系列切換浮動球 (僅查看鏡子類時出現) */}
+                {/* 4. 手機版：浮動球 (覆蓋在內容上但不遮擋中間視線) */}
                 {(activeCategory === '矩形框鏡' || categories[0].subSeries.some(s => activeCategory === s.id)) && (
                     <div ref={menuRef} className="lg:hidden fixed bottom-10 right-6 z-[9999] flex flex-col items-end">
                         {showSubMenu && (
-                            <div className="mb-4 bg-white shadow-[0_20px_60px_rgba(0,0,0,0.3)] border rounded-3xl py-3 w-48 animate-in zoom-in-95 origin-bottom-right">
+                            <div className="mb-4 bg-white/90 backdrop-blur-lg shadow-2xl border border-white/20 rounded-3xl py-3 w-44 animate-in slide-in-from-bottom-5">
                                 {categories[0].subSeries.map(sub => (
                                     <button
                                         key={sub.id}
                                         onClick={() => setActiveCategory(sub.id)}
-                                        className={`w-full px-5 py-4 text-left text-sm ${activeCategory === sub.id ? 'text-primary bg-blue-50 font-black' : 'text-slate-600'}`}
+                                        className={`w-full px-5 py-3 text-left text-sm ${activeCategory === sub.id ? 'text-primary font-black' : 'text-slate-600'}`}
                                     >
                                         {sub.label}
                                     </button>
@@ -630,11 +609,9 @@ const ProductsPage = () => {
                         )}
                         <button 
                             onClick={() => setShowSubMenu(!showSubMenu)}
-                            className="w-14 h-14 bg-primary text-white rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform"
+                            className="w-12 h-12 bg-primary/90 backdrop-blur-md text-white rounded-full shadow-lg flex items-center justify-center active:scale-95"
                         >
-                            <span className="material-symbols-outlined text-2xl">
-                                {showSubMenu ? 'close' : 'filter_alt'}
-                            </span>
+                            <span className="material-symbols-outlined">{showSubMenu ? 'close' : 'filter_list'}</span>
                         </button>
                     </div>
                 )}
