@@ -489,12 +489,9 @@
         };
 
 const ProductsPage = () => {
-    // 1. 初始化狀態：預設為 'all' 讓一開始顯示全部產品
     const [activeCategory, setActiveCategory] = React.useState('all');
-    // 手機版選單展開狀態
     const [showMobileSub, setShowMobileSub] = React.useState(false);
 
-    // 2. 分類清單與子系列 (RF, RL, CF, CL, IR, FL, MC)
     const categories = [
         { 
             name: '矩形框鏡', 
@@ -510,13 +507,13 @@ const ProductsPage = () => {
     return (
         <div className="flex-1 w-full flex flex-col lg:flex-row bg-background-light dark:bg-background-dark">
             
-            {/* 左側邊欄 */}
-            <aside className="w-full lg:w-64 flex-none lg:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark z-20">
+            {/* 左側邊欄：z-40 確保標頭與選單在最前 */}
+            <aside className="w-full lg:w-64 flex-none lg:border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark z-40">
                 <div className="p-1.5 lg:p-6 lg:sticky lg:top-16">
                     
-                    {/* 產品中心標題：點擊切換為 all (顯示全部) */}
+                    {/* 產品中心標題 */}
                     <div 
-                        className={`hidden lg:block mb-6 cursor-pointer transition-colors hover:text-primary ${activeCategory === 'all' ? 'text-primary' : 'text-slate-800'}`}
+                        className={`hidden lg:block mb-6 cursor-pointer transition-colors hover:text-primary ${activeCategory === 'all' ? 'text-primary' : ''}`}
                         onClick={() => {
                             setActiveCategory('all');
                             setShowMobileSub(false);
@@ -526,14 +523,13 @@ const ProductsPage = () => {
                         <p className="text-text-sub text-[10px] uppercase tracking-widest">Product Catalog</p>
                     </div>
 
-                    {/* 選單容器：lg:overflow-visible 讓電腦版選單可以彈出 */}
-                    <div className="flex lg:flex-col gap-1 overflow-x-auto lg:overflow-visible pb-1 lg:pb-0 scrollbar-hide snap-x items-center lg:items-stretch">
+                    {/* 選單容器：手機版取消 overflow-hidden，改用 overflow-visible */}
+                    <div className="flex lg:flex-col gap-1 overflow-visible pb-1 lg:pb-0 items-center lg:items-stretch relative">
                         {categories.map(cat => (
                             <div key={cat.name} className="relative group flex-none">
                                 <div 
                                     onClick={() => {
                                         if (cat.subSeries) {
-                                            // 手機版：如果是矩形框鏡則切換選單，且顯示該類別全部
                                             setShowMobileSub(!showMobileSub);
                                             setActiveCategory(cat.name);
                                         } else {
@@ -541,8 +537,8 @@ const ProductsPage = () => {
                                             setShowMobileSub(false);
                                         }
                                     }} 
-                                    className={`flex lg:flex-row flex-col items-center lg:items-center justify-center lg:justify-start transition-all duration-300 cursor-pointer snap-start px-4 py-2 lg:px-2 lg:min-w-0 active:opacity-70 ${
-                                        activeCategory === cat.name || (cat.subSeries && cat.subSeries.includes(activeCategory))
+                                    className={`flex lg:flex-row flex-col items-center justify-center lg:justify-start transition-all duration-300 cursor-pointer px-4 py-2 lg:px-2 active:opacity-70 ${
+                                        (activeCategory === cat.name || (cat.subSeries && cat.subSeries.includes(activeCategory)))
                                         ? 'text-primary' 
                                         : 'text-slate-400 lg:hover:text-text-main'
                                     }`}
@@ -558,22 +554,31 @@ const ProductsPage = () => {
                                                 </span>
                                             )}
                                         </span>
-                                        {/* 手機版選中底線 */}
                                         <div className={`h-[2px] rounded-full bg-primary transition-all duration-500 lg:hidden ${
                                             (activeCategory === cat.name || (cat.subSeries && cat.subSeries.includes(activeCategory))) ? 'w-1/3 mt-0.5' : 'w-0 mt-0.5'
                                         }`} />
                                     </div>
                                 </div>
 
-                                {/* 子選單：電腦版側邊彈出，手機版下方展開 */}
+                                {/* 修正後的覆蓋選單：使用 fixed 定義或是極高 z-index */}
                                 {cat.subSeries && (
                                     <div className={`
                                         ${showMobileSub ? 'flex' : 'hidden'} 
                                         lg:group-hover:flex flex-col 
-                                        absolute lg:left-full lg:top-0 left-0 top-full mt-1 lg:mt-0 lg:ml-1 
-                                        bg-white dark:bg-surface-dark shadow-2xl border border-slate-100 dark:border-slate-800 
-                                        py-2 w-32 z-50 rounded-lg animate-in fade-in duration-200
+                                        absolute 
+                                        left-0 lg:left-full 
+                                        top-full lg:top-0 
+                                        mt-2 lg:mt-0 lg:ml-2
+                                        bg-white dark:bg-surface-dark 
+                                        shadow-[0_20px_50px_rgba(0,0,0,0.3)] 
+                                        border border-slate-100 dark:border-slate-800 
+                                        py-2 w-44 
+                                        z-[99999] 
+                                        rounded-2xl animate-in fade-in zoom-in-95 duration-200
                                     `}>
+                                        <div className="px-5 py-2 mb-1 border-b border-slate-50 lg:hidden">
+                                            <span className="text-[10px] font-black text-primary uppercase tracking-widest">Select Series</span>
+                                        </div>
                                         {cat.subSeries.map(sub => (
                                             <button
                                                 key={sub}
@@ -582,8 +587,8 @@ const ProductsPage = () => {
                                                     setActiveCategory(sub);
                                                     setShowMobileSub(false);
                                                 }}
-                                                className={`px-4 py-2 text-left text-xs transition-colors ${
-                                                    activeCategory === sub ? 'text-primary bg-slate-50 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-primary'
+                                                className={`px-5 py-3 lg:py-2 text-left text-sm lg:text-xs transition-colors ${
+                                                    activeCategory === sub ? 'text-primary bg-blue-50 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-primary'
                                                 }`}
                                             >
                                                 {sub} 系列
@@ -597,11 +602,10 @@ const ProductsPage = () => {
                 </div>
             </aside>
 
-            {/* 右側主內容：iframe */}
-            <main className="flex-1 flex flex-col min-w-0">
+            {/* 右側主內容：z-10 確保它在下面 */}
+            <main className="flex-1 flex flex-col min-w-0 z-10 relative">
                 <div className="flex-1 w-full bg-white overflow-hidden">
                     <iframe 
-                        /* 當為 all 或點擊大類別名稱時顯示全部 */
                         src={`product-table.html?search=${encodeURIComponent((activeCategory === 'all' || activeCategory === '矩形框鏡') ? '' : activeCategory)}`}
                         title="Product System"
                         key={activeCategory} 
@@ -612,6 +616,9 @@ const ProductsPage = () => {
         </div>
     );
 };
+
+
+
 const ProjectsPage = () => {
     const [activeFilter, setActiveFilter] = useState('全部');
     const [selectedProject, setSelectedProject] = useState(null);
