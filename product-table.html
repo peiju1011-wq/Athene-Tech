@@ -103,6 +103,17 @@ body {
     .product-images { flex: none; width: 100%; }
     .brand-name { font-size: 1rem; }
   }
+
+/* 隱藏原本的搜尋壩與標題，因為功能已移至主頁面的搜尋球 */
+.search-container {
+  display: none !important;
+}
+
+/* 如果有標題或麵包屑導覽也可以一併隱藏，讓型錄更乾淨 */
+.catalog-header {
+  display: none !important;
+}
+
 </style>
 </head>
 <body>
@@ -991,7 +1002,29 @@ window.addEventListener('load', updateLanguage);
     document.getElementById('noResults').style.display = hasResult ? "none" : "block";
   }
 </script>
+<script>
+  // 監聽網址參數，接收來自主頁面搜尋球的關鍵字
+window.addEventListener('load', function() {
+    const params = new URLSearchParams(window.location.search);
+    const searchTerm = params.get('search');
+    
+    // 取得原本隱藏的搜尋框元素
+    const searchInput = document.getElementById('globalSearch');
+    
+    if (searchTerm !== null && searchInput) {
+        searchInput.value = searchTerm;
+        // 觸發原本檔案中已寫好的過濾函式
+        filterProducts(); 
+    }
+});
 
+// 確保原本的 filterProducts 函式依然存在於檔案中
+function filterProducts() {
+    const filter = document.getElementById('globalSearch').value.toUpperCase().trim();
+    const rows = document.getElementsByClassName('product-row');
+    // ... 原本的過濾邏輯 ...
+}
+</script>
 </body>
 </html>
 
