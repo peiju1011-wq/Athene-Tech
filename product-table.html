@@ -102,9 +102,11 @@ body {
 
  
 /* 永久隱藏 product-table.html 內建搜尋列（桌機/手機都隱藏） */
-.search-container { 
-  display: none !important; 
+
+.search-container, .search-box, #globalSearch {
+  display: none !important;
 }
+
 
 /* 手機 RWD 修復：避免只剩圖片、表格被擠出視窗，圖片不再被裁切 */
 @media (max-width: 640px) {
