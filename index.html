@@ -530,7 +530,7 @@ const ProductsPage = () => {
 
     const getIframeSrc = () => {
         if (tempSearch) return `product-table.html?search=${encodeURIComponent(tempSearch)}`;
-        if (activeCategory === 'all' || activeCategory === '矩形框鏡') return `product-table.html?search=`;
+        if (activeCategory === 'all' || activeCategory === '多樣框鏡') return `product-table.html?search=`;
         return `product-table.html?search=${encodeURIComponent(activeCategory)}`;
     };
 
@@ -653,8 +653,8 @@ const ProductsPage = () => {
                             <span className="material-symbols-outlined">{showSearchBall ? 'keyboard_arrow_right' : 'search'}</span>
                         </button>
 
-                        {/* 篩選球 (僅在矩形框鏡系列出現) */}
-                        {(activeCategory === '矩形框鏡' || categories[0].subSeries.some(s => activeCategory === s.id)) && (
+                        {/* 篩選球 (僅在多樣框鏡系列出現) */}
+                        {(activeCategory === '框鏡' || categories[0].subSeries.some(s => activeCategory === s.id)) && (
                             <button 
                                 onClick={() => { setShowSubMenu(!showSubMenu); setShowSearchBall(false); }}
                                 className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all ${showSubMenu ? 'bg-slate-800 text-white' : 'bg-primary text-white'}`}
