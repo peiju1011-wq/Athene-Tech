@@ -632,11 +632,14 @@ const ProductsPage = () => {
 
   {/* --- 右側內容區：RWD 強化版 --- */}
 <main className="flex-1 relative flex flex-col min-h-0 bg-white">
-  <div className="flex-1 w-full relative min-h-0 overflow-hidden">
-    <iframe
-      src={getIframeSrc()}
-      key={activeCategory + tempSearch}
-      className="absolute inset-0 w-full h-full border-none"
+    <div className="flex-1 w-full h-full relative">
+        <iframe 
+            src={getIframeSrc()}
+            key={activeCategory + tempSearch} 
+            /* 關鍵修改：在手機版強制使用 absolute 填滿，
+               並確保 height 不要被父層的 flex 壓縮 
+            */
+            className="absolute inset-0 w-full h-full border-none"
             style={{ 
                 height: '100%', 
                 width: '100%',
@@ -699,7 +702,6 @@ const ProductsPage = () => {
         </div>
     </div>
 </main>
-
         </div>
     );
 };
