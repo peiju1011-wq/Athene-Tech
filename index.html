@@ -491,7 +491,7 @@
 const ProductsPage = () => {
     const [activeCategory, setActiveCategory] = React.useState('all');
     const [showSubMenu, setShowSubMenu] = React.useState(false); 
-    const [showSearchBall, setShowSearchBall] = React.useState(false); // 控制手機搜尋球展開
+    const [showSearchBall, setShowSearchBall] = React.useState(false); 
     const [tempSearch, setTempSearch] = React.useState(''); 
     
     const menuRef = React.useRef(null);
@@ -516,7 +516,6 @@ const ProductsPage = () => {
         { name: '研發新品', icon: 'auto_awesome' }
     ];
 
-    // 點擊外部收合
     React.useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current && !menuRef.current.contains(event.target)) {
@@ -537,10 +536,10 @@ const ProductsPage = () => {
     return (
         <div className="flex w-full h-screen bg-background-light dark:bg-background-dark relative overflow-hidden flex-col lg:flex-row">
             
-            {/* --- 電腦版：左側邊欄 (保持不變，含搜尋壩) --- */}
+            {/* --- 電腦版：左側邊欄 --- */}
             <aside className="hidden lg:flex w-72 flex-col border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-surface-dark z-40 shadow-sm">
                 <div className="p-8 flex flex-col h-full">
-                    <div className="mb-8 cursor-pointer group" onClick={() => { setActiveCategory('all'); setTempSearch(''); }}>
+                    <div className="mb-8 cursor-pointer group" onClick={() => { setActiveCategory('all'); setTempSearch(''); setShowSubMenu(false); }}>
                         <h1 className="text-xl font-black text-slate-800 dark:text-white group-hover:text-primary transition-colors">產品中心</h1>
                         <p className="text-[10px] text-slate-400 uppercase tracking-[0.2em] font-medium">Product Catalog</p>
                     </div>
@@ -558,12 +557,18 @@ const ProductsPage = () => {
 
                     <nav className="flex flex-col gap-1.5 relative flex-1">
                         {categories.map(cat => (
-                            <div key={cat.name} className="relative group/item">
+                            <div key={cat.name} className="relative">
                                 <div 
                                     onClick={() => {
                                         setTempSearch('');
-                                        if (cat.subSeries) { setShowSubMenu(!showSubMenu); setActiveCategory(cat.name); }
-                                        else { setActiveCategory(cat.name); setShowSubMenu(false); }
+                                        if (cat.subSeries) { 
+                                            // 電腦版：點擊同標籤切換收合，點擊不同標籤則開啟
+                                            setShowSubMenu(activeCategory === cat.name ? !showSubMenu : true); 
+                                            setActiveCategory(cat.name); 
+                                        } else { 
+                                            setActiveCategory(cat.name); 
+                                            setShowSubMenu(false); 
+                                        }
                                     }} 
                                     className={`flex items-center px-4 py-3 rounded-xl transition-all cursor-pointer ${
                                         (activeCategory === cat.name || (cat.subSeries && cat.subSeries.some(s => activeCategory === s.id)))
@@ -572,18 +577,44 @@ const ProductsPage = () => {
                                 >
                                     <span className="material-symbols-outlined text-xl mr-3">{cat.icon}</span>
                                     <span className="text-sm flex-1">{cat.name}</span>
+                                    {cat.subSeries && (
+                                        <span className={`material-symbols-outlined text-sm transition-transform ${showSubMenu && activeCategory === cat.name ? 'rotate-180' : ''}`}>
+                                            expand_more
+                                        </span>
+                                    )}
                                 </div>
-                                {/* 電腦版二級選單省略...保持與之前相同 */}
+
+                                {/* 電腦版二級選單：彈出式設計 */}
+                                {cat.subSeries && showSubMenu && activeCategory === cat.name && (
+                                    <div className="absolute left-full top-0 ml-2 w-52 bg-white shadow-2xl border border-slate-100 rounded-2xl py-2 z-50 animate-in fade-in slide-in-from-left-2">
+                                        <div className="px-4 py-1 mb-1 border-b border-slate-50 text-[10px] font-black text-slate-300 tracking-widest">
+                                            SELECT SERIES
+                                        </div>
+                                        {cat.subSeries.map(sub => (
+                                            <button 
+                                                key={sub.id} 
+                                                onClick={() => setActiveCategory(sub.id)} 
+                                                className={`w-full px-4 py-2.5 text-left text-xs transition-colors ${
+                                                    activeCategory === sub.id 
+                                                    ? 'text-primary bg-primary/5 font-bold' 
+                                                    : 'text-slate-600 hover:text-primary hover:bg-slate-50'
+                                                }`}
+                                            >
+                                                {sub.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </nav>
                 </div>
             </aside>
 
-            {/* --- 手機版：頂部導航 (僅保留分類選單) --- */}
+            {/* --- 手機版：頂部導航 --- */}
             <div className="lg:hidden w-full bg-white/90 backdrop-blur-md z-40 border-b border-slate-100 sticky top-0 flex overflow-x-auto scrollbar-hide gap-2 p-3">
                 <button 
-                    onClick={() => { setActiveCategory('all'); setTempSearch(''); }}
+                    onClick={() => { setActiveCategory('all'); setTempSearch(''); setShowSubMenu(false); }}
                     className={`flex-none px-5 py-1.5 rounded-full text-xs font-bold transition-all ${activeCategory === 'all' ? 'bg-primary text-white shadow-md' : 'bg-slate-50 text-slate-400'}`}
                 >
                     全部產品
@@ -591,7 +622,7 @@ const ProductsPage = () => {
                 {categories.map(cat => (
                     <button 
                         key={cat.name} 
-                        onClick={() => { setActiveCategory(cat.name); setTempSearch(''); }}
+                        onClick={() => { setActiveCategory(cat.name); setTempSearch(''); setShowSubMenu(false); }}
                         className={`flex-none px-5 py-1.5 rounded-full text-xs font-bold transition-all ${ (activeCategory === cat.name || (cat.subSeries && cat.subSeries.some(s => activeCategory === s.id))) ? 'bg-primary text-white shadow-md' : 'bg-slate-50 text-slate-400' }`}
                     >
                         {cat.name}
@@ -607,17 +638,15 @@ const ProductsPage = () => {
                     className="w-full h-full border-none flex-1"
                 ></iframe>
 
-                {/* --- 手機版：右下角雙球連動 (優化版) --- */}
+                {/* --- 手機版：右下角雙球連動 --- */}
                 <div ref={menuRef} className="lg:hidden fixed bottom-8 right-6 z-[9999] flex flex-col items-end gap-3">
-                    
-                    {/* 1. 搜尋展開膠囊 */}
                     {showSearchBall && (
                         <div className="mb-2 w-64 bg-white/95 backdrop-blur-xl shadow-2xl rounded-full p-1.5 flex items-center border border-primary/20 animate-in slide-in-from-right-5">
                             <input 
                                 type="text" 
                                 placeholder="搜尋型號..." 
                                 autoFocus
-                                className="flex-1 border-none focus:ring-0 text-sm pl-4 bg-transparent font-medium"
+                                className="flex-1 border-none focus:ring-0 text-sm pl-4 bg-transparent font-medium outline-none"
                                 value={tempSearch}
                                 onChange={(e) => setTempSearch(e.target.value)}
                             />
@@ -627,7 +656,6 @@ const ProductsPage = () => {
                         </div>
                     )}
 
-                    {/* 2. 篩選二級清單 */}
                     {showSubMenu && (
                         <div className="mb-2 bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-100 rounded-3xl py-4 w-48 animate-in zoom-in-95 origin-bottom-right">
                             <div className="px-5 py-1 mb-2 border-b border-slate-50 text-[10px] font-black text-slate-300 tracking-tighter">SUB SERIES</div>
@@ -643,9 +671,7 @@ const ProductsPage = () => {
                         </div>
                     )}
 
-                    {/* 3. 按鈕組 */}
                     <div className="flex flex-col gap-3">
-                        {/* 搜尋球 */}
                         <button 
                             onClick={() => { setShowSearchBall(!showSearchBall); setShowSubMenu(false); }}
                             className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all ${showSearchBall ? 'bg-slate-800 text-white' : 'bg-white text-primary border border-primary/10'}`}
@@ -653,8 +679,7 @@ const ProductsPage = () => {
                             <span className="material-symbols-outlined">{showSearchBall ? 'keyboard_arrow_right' : 'search'}</span>
                         </button>
 
-                        {/* 篩選球 (僅在多樣框鏡系列出現) */}
-                        {(activeCategory === '框鏡' || categories[0].subSeries.some(s => activeCategory === s.id)) && (
+                        {(activeCategory === '多樣框鏡' || categories[0].subSeries.some(s => activeCategory === s.id)) && (
                             <button 
                                 onClick={() => { setShowSubMenu(!showSubMenu); setShowSearchBall(false); }}
                                 className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all ${showSubMenu ? 'bg-slate-800 text-white' : 'bg-primary text-white'}`}
@@ -668,7 +693,6 @@ const ProductsPage = () => {
         </div>
     );
 };
-
 const ProjectsPage = () => {
     const [activeFilter, setActiveFilter] = useState('全部');
     const [selectedProject, setSelectedProject] = useState(null);
