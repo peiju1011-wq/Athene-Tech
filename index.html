@@ -630,66 +630,76 @@ const ProductsPage = () => {
                 ))}
             </div>
 
-            {/* --- 右側內容區 --- */}
-            <main className="flex-1 flex flex-col relative h-full">
-                <iframe 
-                    src={getIframeSrc()}
-                    key={activeCategory + tempSearch} 
-                    className="w-full h-full border-none flex-1"
-                ></iframe>
+  {/* --- 右側內容區：RWD 強化版 --- */}
+<main className="flex-1 relative flex flex-col min-h-0 bg-white">
+  <div className="flex-1 w-full relative min-h-0 overflow-hidden">
+    <iframe
+      src={getIframeSrc()}
+      key={activeCategory + tempSearch}
+      className="absolute inset-0 w-full h-full border-none"
+            style={{ 
+                height: '100%', 
+                width: '100%',
+                overflow: 'auto',
+                WebkitOverflowScrolling: 'touch' // 讓 iOS 滾動更流暢
+            }}
+        ></iframe>
+    </div>
 
-                {/* --- 手機版：右下角雙球連動 --- */}
-                <div ref={menuRef} className="lg:hidden fixed bottom-8 right-6 z-[9999] flex flex-col items-end gap-3">
-                    {showSearchBall && (
-                        <div className="mb-2 w-64 bg-white/95 backdrop-blur-xl shadow-2xl rounded-full p-1.5 flex items-center border border-primary/20 animate-in slide-in-from-right-5">
-                            <input 
-                                type="text" 
-                                placeholder="搜尋型號..." 
-                                autoFocus
-                                className="flex-1 border-none focus:ring-0 text-sm pl-4 bg-transparent font-medium outline-none"
-                                value={tempSearch}
-                                onChange={(e) => setTempSearch(e.target.value)}
-                            />
-                            <button onClick={() => {setTempSearch(''); setShowSearchBall(false);}} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
-                                <span className="material-symbols-outlined text-sm">close</span>
-                            </button>
-                        </div>
-                    )}
+    {/* --- 手機版：右下角雙球連動 (這部分維持您剛才運作正常的代碼) --- */}
+    <div ref={menuRef} className="lg:hidden fixed bottom-8 right-6 z-[9999] flex flex-col items-end gap-3">
+        {/* ... 您原本的搜尋球與篩選球邏輯 ... */}
+        {showSearchBall && (
+            <div className="mb-2 w-64 bg-white/95 backdrop-blur-xl shadow-2xl rounded-full p-1.5 flex items-center border border-primary/20 animate-in slide-in-from-right-5">
+                <input 
+                    type="text" 
+                    placeholder="搜尋型號..." 
+                    autoFocus
+                    className="flex-1 border-none focus:ring-0 text-sm pl-4 bg-transparent font-medium outline-none"
+                    value={tempSearch}
+                    onChange={(e) => setTempSearch(e.target.value)}
+                />
+                <button onClick={() => {setTempSearch(''); setShowSearchBall(false);}} className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                    <span className="material-symbols-outlined text-sm">close</span>
+                </button>
+            </div>
+        )}
 
-                    {showSubMenu && (
-                        <div className="mb-2 bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-100 rounded-3xl py-4 w-48 animate-in zoom-in-95 origin-bottom-right">
-                            <div className="px-5 py-1 mb-2 border-b border-slate-50 text-[10px] font-black text-slate-300 tracking-tighter">SUB SERIES</div>
-                            {categories[0].subSeries.map(sub => (
-                                <button 
-                                    key={sub.id} 
-                                    onClick={(e) => { e.stopPropagation(); setActiveCategory(sub.id); setShowSubMenu(false); }}
-                                    className={`w-full px-5 py-3 text-left text-sm ${activeCategory === sub.id ? 'text-primary bg-primary/5 font-black' : 'text-slate-600'}`}
-                                >
-                                    {sub.label}
-                                </button>
-                            ))}
-                        </div>
-                    )}
+        {showSubMenu && (
+            <div className="mb-2 bg-white/95 backdrop-blur-xl shadow-2xl border border-slate-100 rounded-3xl py-4 w-48 animate-in zoom-in-95 origin-bottom-right">
+                <div className="px-5 py-1 mb-2 border-b border-slate-50 text-[10px] font-black text-slate-300 tracking-tighter">SUB SERIES</div>
+                {categories[0].subSeries.map(sub => (
+                    <button 
+                        key={sub.id} 
+                        onClick={(e) => { e.stopPropagation(); setActiveCategory(sub.id); setShowSubMenu(false); }}
+                        className={`w-full px-5 py-3 text-left text-sm ${activeCategory === sub.id ? 'text-primary bg-primary/5 font-black' : 'text-slate-600'}`}
+                    >
+                        {sub.label}
+                    </button>
+                ))}
+            </div>
+        )}
 
-                    <div className="flex flex-col gap-3">
-                        <button 
-                            onClick={() => { setShowSearchBall(!showSearchBall); setShowSubMenu(false); }}
-                            className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all ${showSearchBall ? 'bg-slate-800 text-white' : 'bg-white text-primary border border-primary/10'}`}
-                        >
-                            <span className="material-symbols-outlined">{showSearchBall ? 'keyboard_arrow_right' : 'search'}</span>
-                        </button>
+        <div className="flex flex-col gap-3">
+            <button 
+                onClick={() => { setShowSearchBall(!showSearchBall); setShowSubMenu(false); }}
+                className={`w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all ${showSearchBall ? 'bg-slate-800 text-white' : 'bg-white text-primary border border-primary/10'}`}
+            >
+                <span className="material-symbols-outlined">{showSearchBall ? 'keyboard_arrow_right' : 'search'}</span>
+            </button>
 
-                        {(activeCategory === '多樣框鏡' || categories[0].subSeries.some(s => activeCategory === s.id)) && (
-                            <button 
-                                onClick={() => { setShowSubMenu(!showSubMenu); setShowSearchBall(false); }}
-                                className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all ${showSubMenu ? 'bg-slate-800 text-white' : 'bg-primary text-white'}`}
-                            >
-                                <span className="material-symbols-outlined text-3xl">{showSubMenu ? 'close' : 'filter_list'}</span>
-                            </button>
-                        )}
-                    </div>
-                </div>
-            </main>
+            {(activeCategory === '多樣框鏡' || categories[0].subSeries.some(s => activeCategory === s.id)) && (
+                <button 
+                    onClick={() => { setShowSubMenu(!showSubMenu); setShowSearchBall(false); }}
+                    className={`w-16 h-16 rounded-full shadow-2xl flex items-center justify-center transition-all ${showSubMenu ? 'bg-slate-800 text-white' : 'bg-primary text-white'}`}
+                >
+                    <span className="material-symbols-outlined text-3xl">{showSubMenu ? 'close' : 'filter_list'}</span>
+                </button>
+            )}
+        </div>
+    </div>
+</main>
+
         </div>
     );
 };
