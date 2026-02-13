@@ -28,19 +28,6 @@ body {
 /* --- 修正後的搜尋與表格空間優化 --- */
 /* --- 電腦版：恢復左右撐開的大氣樣式 --- */
 @media (min-width: 1025px) {
-  .search-container {
-    position: sticky; 
-    top: 0; 
-    z-index: 9999;
-    background: white !important; /* 恢復白色背景，滾動時才看得清楚 */
-    padding: 15px 0 !important;   /* 增加上下間距 */
-    margin-bottom: 10px !important;
-    width: 100% !important;        /* 左右撐開 */
-    display: flex !important;
-    justify-content: center;       /* 內部搜尋框置中 */
-    border-bottom: 1px solid #eee;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05) !important;
-  }
 
   /* 這裡設定搜尋框的最大寬度，讓它對齊產品內容 */
   .search-box {
@@ -63,12 +50,7 @@ body {
   }
 }
 
-/* --- 手機版：維持您要的縮減空間或隱藏樣式 --- */
-@media (max-width: 1024px) {
-  .search-container {
-    display: none !important; /* 手機版完全隱藏，交給 index.html 的球 */
-  }
-}
+
 
 /* 核心修改：大幅縮減表格單元格的上下間距，節省空間 */
 #productTable th, #productTable td {
@@ -118,26 +100,55 @@ body {
   .no-results { display: none; text-align: center; padding: 60px; color: #999; }
 
 
-  /* 電腦版 (寬度 > 1024px)：恢復顯示搜尋壩 */
-  @media (min-width: 1025px) {
-    .search-container {
-      display: none !important;
-      /* display: flex !important; 強制回歸 */
-      background: white !important;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 15px;
-      border-bottom: 1px solid #eee;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    }
-  }
+ 
 
   /* 手機版 (寬度 <= 1024px)：維持隱藏，由主頁球體接管 */
   @media (max-width: 1024px) {
-    .search-container {
-      display: none !important;
-    }
+/* 1) 永久隱藏 product-table.html 內建搜尋列（桌機/手機都隱藏） */
+.search-container { 
+  display: none !important; 
+}
+
+/* 2) 手機 RWD 修復：避免只剩圖片、表格被擠出視窗，圖片不再被裁切 */
+@media (max-width: 640px) {
+
+  .product-row {
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px;
+  }
+
+  .product-images {
+    flex: none;          /* 取消 450px 固定寬 */
+    width: 100%;
+    gap: 10px;
+  }
+
+  .img-box img {
+    width: 100%;
+    height: auto;
+    object-fit: contain; /* 防裁切 */
+  }
+
+  .product-data { width: 100%; }
+
+  .table-container {
+    width: 100%;
+    overflow-x: auto; 
+    -webkit-overflow-scrolling: touch;
+  }
+
+  table {
+    min-width: 360px;    /* 依欄位多寡可微調 */
+    font-size: 0.88rem;
+  }
+
+  th, td {
+    white-space: nowrap;
+    padding: 10px 8px;
+  }
+}
+
   }
 
 </style>
@@ -1096,7 +1107,7 @@ function filterProducts() {
 
     if (searchTerm !== null && searchInput) {
       // 若是切換大類，不填入關鍵字；若是系列或搜尋，則填入
-      searchInput.value = (searchTerm === 'all' || searchTerm === '矩形框鏡') ? "" : searchTerm;
+      searchInput.value = (searchTerm === 'all' || searchTerm === '多樣框鏡') ? "" : searchTerm;
       filterProducts(); // 立即執行過濾
     }
   }
@@ -1107,6 +1118,7 @@ function filterProducts() {
 
 </body>
 </html>
+
 
 
 
