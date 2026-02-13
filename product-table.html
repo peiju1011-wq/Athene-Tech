@@ -101,15 +101,12 @@ body {
 
 
  
-
-  /* 手機版 (寬度 <= 1024px)：維持隱藏，由主頁球體接管 */
-  @media (max-width: 1024px) {
-/* 1) 永久隱藏 product-table.html 內建搜尋列（桌機/手機都隱藏） */
+/* 永久隱藏 product-table.html 內建搜尋列（桌機/手機都隱藏） */
 .search-container { 
   display: none !important; 
 }
 
-/* 2) 手機 RWD 修復：避免只剩圖片、表格被擠出視窗，圖片不再被裁切 */
+/* 手機 RWD 修復：避免只剩圖片、表格被擠出視窗，圖片不再被裁切 */
 @media (max-width: 640px) {
 
   .product-row {
@@ -139,7 +136,7 @@ body {
   }
 
   table {
-    min-width: 360px;    /* 依欄位多寡可微調 */
+    min-width: 360px;
     font-size: 0.88rem;
   }
 
@@ -148,8 +145,6 @@ body {
     padding: 10px 8px;
   }
 }
-
-  }
 
 </style>
 
